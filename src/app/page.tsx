@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { resumeData } from '@/data/resume';
+import HomeSection from '@/components/sections/HomeSection';
 import AboutSection from '@/components/sections/AboutSection';
 import SkillsSection from '@/components/sections/SkillsSection';
 import CareerSection from '@/components/sections/CareerSection';
@@ -9,17 +10,34 @@ import ProjectsSection from '@/components/sections/ProjectsSection';
 import EducationSection from '@/components/sections/EducationSection';
 
 const TABS = [
-  { id: 'about', label: '자기소개', color: 'var(--tab-about)' },
-  { id: 'career', label: '경력', color: 'var(--tab-career)' },
-  { id: 'skills', label: '기술', color: 'var(--tab-skills)' },
-  { id: 'projects', label: '포트폴리오', color: 'var(--tab-projects)' },
-  { id: 'education', label: '학력', color: 'var(--tab-education)' },
+  { id: 'home', label: '', icon: true, color: 'var(--tab-home)' },
+  { id: 'about', label: '자기소개', icon: false, color: 'var(--tab-about)' },
+  { id: 'career', label: '경력', icon: false, color: 'var(--tab-career)' },
+  { id: 'skills', label: '기술', icon: false, color: 'var(--tab-skills)' },
+  { id: 'projects', label: '포트폴리오', icon: false, color: 'var(--tab-projects)' },
+  { id: 'education', label: '학력', icon: false, color: 'var(--tab-education)' },
 ] as const;
 
 type TabId = (typeof TABS)[number]['id'];
 
+const HomeIcon = ({ color }: { color: string }) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={color}
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    <polyline points="9 22 9 12 15 12 15 22" />
+  </svg>
+);
+
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<TabId>('about');
+  const [activeTab, setActiveTab] = useState<TabId>('home');
   const wheelCooldown = useRef(false);
 
   const handleWheel = useCallback(
@@ -45,6 +63,8 @@ export default function Home() {
 
   const renderContent = () => {
     switch (activeTab) {
+      case 'home':
+        return <HomeSection profile={resumeData.profile} />;
       case 'about':
         return <AboutSection paragraphs={resumeData.about} />;
       case 'career':
@@ -231,10 +251,10 @@ export default function Home() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`shrink-0 rounded-t-md px-3 transition-all duration-150 ${textClass}`}
+                  className={`shrink-0 rounded-t-md px-3 transition-all duration-150 ${tab.icon ? '' : textClass}`}
                   style={{ ...buttonStyle, color: textColor, height: isActive ? '36px' : '26px' }}
                 >
-                  {tab.label}
+                  {tab.icon ? <HomeIcon color={textColor} /> : tab.label}
                 </button>
               );
             })}
@@ -250,7 +270,7 @@ export default function Home() {
           {/* 종이 콘텐츠 */}
           <div
             onWheel={handleWheel}
-            className="notebook-content paper-lines flex-1 overflow-hidden px-8 py-8 md:px-10 md:py-10"
+            className={`notebook-content flex-1 overflow-hidden px-8 py-8 md:px-10 md:py-10 ${activeTab !== 'home' ? 'paper-lines' : ''}`}
             style={{ backgroundColor: 'var(--paper)' }}
           >
             {renderContent()}
@@ -278,19 +298,23 @@ export default function Home() {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center justify-center rounded-r-lg transition-all duration-150 ${isActive ? 'w-[40px]' : 'w-[30px]'}`}
-                  style={{ ...buttonStyle, height: '80px' }}
+                  style={{ ...buttonStyle, height: tab.icon ? '40px' : '80px' }}
                 >
-                  <span
-                    className={textClass}
-                    style={{
-                      writingMode: 'vertical-rl',
-                      textOrientation: 'mixed',
-                      whiteSpace: 'nowrap',
-                      color: textColor,
-                    }}
-                  >
-                    {tab.label}
-                  </span>
+                  {tab.icon ? (
+                    <HomeIcon color={textColor} />
+                  ) : (
+                    <span
+                      className={textClass}
+                      style={{
+                        writingMode: 'vertical-rl',
+                        textOrientation: 'mixed',
+                        whiteSpace: 'nowrap',
+                        color: textColor,
+                      }}
+                    >
+                      {tab.label}
+                    </span>
+                  )}
                 </button>
               );
             })}
