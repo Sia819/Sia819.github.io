@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { resumeData } from '@/data/resume';
 import MarkdownSection from '@/components/sections/MarkdownSection';
 import { TAB_CONTENT } from '@/content';
@@ -88,22 +88,35 @@ const TabIcon = ({ icon, color }: { icon: 'home' | 'settings'; color: string }) 
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState(HOME_TAB.id);
+  const [hint, setHint] = useState<{ tab: TabDef; direction: 'up' | 'down' } | null>(null);
   const wheelCooldown = useRef(false);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const boundaryTime = useRef<number>(0);
+  const hintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const activeTabDef = ALL_TABS.find((t) => t.id === activeTab) ?? HOME_TAB;
   const showPaperLines = activeTab !== HOME_TAB.id;
 
+  // 탭 변경 시 스크롤 초기화
+  useEffect(() => {
+    setHint(null);
+    boundaryTime.current = 0;
+    if (hintTimer.current) { clearTimeout(hintTimer.current); hintTimer.current = null; }
+    if (contentRef.current) contentRef.current.scrollTop = 0;
+  }, [activeTab]);
+
+  // 콘텐츠 외부에서 휠 → 탭 전환
   const handleWheel = useCallback(
     (e: React.WheelEvent) => {
       if (wheelCooldown.current) return;
       const delta = e.deltaY;
       if (Math.abs(delta) < 10) return;
 
-      const currentIndex = ALL_TABS.findIndex((t) => t.id === activeTab);
-      if (delta > 0 && currentIndex < ALL_TABS.length - 1) {
-        setActiveTab(ALL_TABS[currentIndex + 1].id);
-      } else if (delta < 0 && currentIndex > 0) {
-        setActiveTab(ALL_TABS[currentIndex - 1].id);
+      const idx = ALL_TABS.findIndex((t) => t.id === activeTab);
+      if (delta > 0 && idx < ALL_TABS.length - 1) {
+        setActiveTab(ALL_TABS[idx + 1].id);
+      } else if (delta < 0 && idx > 0) {
+        setActiveTab(ALL_TABS[idx - 1].id);
       } else {
         return;
       }
@@ -188,6 +201,7 @@ export default function Home() {
     <div className="flex h-screen items-stretch justify-center">
       {/* 노트북 전체 컨테이너 */}
       <div
+        onWheel={handleWheel}
         className="relative flex w-full overflow-hidden xl:max-w-[1100px] xl:my-6 xl:rounded-md"
         style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.12)' }}
       >
@@ -336,11 +350,63 @@ export default function Home() {
 
           {/* 종이 콘텐츠 */}
           <div
-            onWheel={handleWheel}
-            className={`notebook-content flex-1 overflow-hidden px-8 py-8 md:px-10 md:py-10 ${showPaperLines ? 'paper-lines' : ''}`}
+            className={`relative flex-1 overflow-hidden py-4 md:py-6 ${showPaperLines ? 'paper-lines' : ''}`}
             style={{ backgroundColor: 'var(--paper)' }}
           >
-            {renderContent()}
+            <div
+              ref={contentRef}
+              onWheel={(e) => {
+                const el = e.currentTarget;
+                const isScrollable = el.scrollHeight > el.clientHeight;
+                if (!isScrollable) return;
+                const atTop = el.scrollTop <= 0;
+                const atBtm = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
+                const goDown = e.deltaY > 0;
+                const atBoundary = (goDown && atBtm) || (!goDown && atTop);
+                if (atBoundary) {
+                  if (!boundaryTime.current) {
+                    boundaryTime.current = Date.now();
+                    const idx = ALL_TABS.findIndex((t) => t.id === activeTab);
+                    const target = goDown ? ALL_TABS[idx + 1] : ALL_TABS[idx - 1];
+                    if (target && !hintTimer.current) {
+                      const dir = goDown ? 'down' as const : 'up' as const;
+                      hintTimer.current = setTimeout(() => setHint({ tab: target, direction: dir }), 1000);
+                    }
+                  }
+                  if (Date.now() - boundaryTime.current < 1000) {
+                    e.stopPropagation();
+                  }
+                  return;
+                }
+                boundaryTime.current = 0;
+                if (hintTimer.current) { clearTimeout(hintTimer.current); hintTimer.current = null; }
+                setHint(null);
+                e.stopPropagation();
+              }}
+              className="notebook-content h-full overflow-y-auto scroll-smooth py-8 pl-8 pr-4 mr-3 md:py-10 md:pl-10 md:pr-6 md:mr-4"
+            >
+              {renderContent()}
+            </div>
+
+            {/* 스크롤 끝 힌트 */}
+            {hint && (
+              <div
+                className={`pointer-events-none absolute left-0 right-0 flex justify-center animate-fade-in ${hint.direction === 'down' ? 'bottom-3' : 'top-3'}`}
+              >
+                <span
+                  className="rounded-full px-4 py-1 text-xs"
+                  style={{
+                    backgroundColor: '#e8f1fa',
+                    color: '#5a7fa0',
+                    border: '1px solid #c4d8ec',
+                  }}
+                >
+                  {hint.direction === 'down'
+                    ? `스크롤하여 이동 → ${hint.tab.label || (hint.tab.icon === 'settings' ? '설정' : '홈')}`
+                    : `${hint.tab.label || (hint.tab.icon === 'home' ? '홈' : '설정')} ← 스크롤하여 이동`}
+                </span>
+              </div>
+            )}
           </div>
         </div>
 

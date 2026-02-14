@@ -58,9 +58,28 @@ body {
   width: 6px;
 }
 .notebook-content::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--border-warm);
+  border-radius: 3px;
 }
 .notebook-content::-webkit-scrollbar-thumb {
   background: var(--kraft-dark);
   border-radius: 3px;
+}
+.notebook-content::-webkit-scrollbar-thumb:hover {
+  background: var(--spine);
+}
+
+/* Firefox 스크롤바 */
+.notebook-content {
+  scrollbar-width: thin;
+  scrollbar-color: var(--kraft-dark) var(--border-warm);
+}
+
+/* 힌트 페이드인 */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
 }
