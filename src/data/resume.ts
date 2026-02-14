@@ -2,7 +2,7 @@ import { ResumeData } from '@/types/resume';
 
 export const resumeData: ResumeData = {
   profile: {
-    name: 'Sia819',
+    name: 'Soung-Gyu Jin',
     title: 'Software Developer',
     subtitle: '효율적이고 유지보수 가능한 코드를 지향하는 개발자',
     email: 'lunasia819@gmail.com',

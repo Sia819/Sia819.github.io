@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Sia819 - Portfolio',
-  description: 'Sia819 Portfolio & Blog',
+  title: 'Soung-Gyu Jin - Portfolio',
+  description: 'Soung-Gyu Jin Portfolio & Blog',
 };
 
 export default function RootLayout({
