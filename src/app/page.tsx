@@ -63,6 +63,20 @@ export default function Home() {
     }
   };
 
+  const getTabStyle = (tab: (typeof TABS)[number]) => {
+    const isActive = activeTab === tab.id;
+    return {
+      isActive,
+      buttonStyle: {
+        backgroundColor: tab.color,
+        opacity: isActive ? 1 : 0.7,
+        boxShadow: isActive ? 'none' : '1px 1px 3px rgba(0,0,0,0.1)',
+      } as React.CSSProperties,
+      textClass: `text-sm transition-all duration-150 ${isActive ? 'font-bold' : 'font-normal'}`,
+      textColor: isActive ? '#101010' : '#faf5eb',
+    };
+  };
+
   const { profile } = resumeData;
 
   return (
@@ -79,16 +93,12 @@ export default function Home() {
           style={{ backgroundColor: 'var(--kraft)' }}
         >
           {/* 프로필 아바타 */}
-          <div
-            className="mb-5 flex h-28 w-28 items-center justify-center rounded-full text-3xl font-bold"
-            style={{
-              backgroundColor: 'var(--kraft-dark)',
-              color: 'var(--kraft-light)',
-              border: '3px solid var(--kraft-light)',
-            }}
-          >
-            {profile.name.charAt(0)}
-          </div>
+          <img
+            src="https://avatars.githubusercontent.com/u/18740181"
+            alt={profile.name}
+            className="mb-5 h-28 w-28 rounded-full object-cover"
+            style={{ border: '3px solid var(--kraft-light)' }}
+          />
 
           {/* 이름 & 직함 */}
           <h1
@@ -195,15 +205,11 @@ export default function Home() {
             className="flex items-center gap-4 px-5 py-4 md:hidden"
             style={{ backgroundColor: 'var(--kraft)' }}
           >
-            <div
-              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full text-lg font-bold"
-              style={{
-                backgroundColor: 'var(--kraft-dark)',
-                color: 'var(--kraft-light)',
-              }}
-            >
-              {profile.name.charAt(0)}
-            </div>
+            <img
+              src="https://avatars.githubusercontent.com/u/18740181"
+              alt={profile.name}
+              className="h-14 w-14 shrink-0 rounded-full object-cover"
+            />
             <div>
               <h1 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
                 {profile.name}
@@ -216,23 +222,30 @@ export default function Home() {
 
           {/* 모바일: 탭 가로 스크롤 */}
           <div
-            className="flex gap-1 overflow-x-auto px-4 py-2 md:hidden"
+            className="flex h-[44px] items-end gap-1 overflow-x-auto px-4 md:hidden"
             style={{ backgroundColor: 'var(--paper)' }}
           >
-            {TABS.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className="shrink-0 rounded-t-md px-3 py-1.5 text-xs font-medium transition-all"
-                style={{
-                  backgroundColor: activeTab === tab.id ? tab.color : 'transparent',
-                  color: activeTab === tab.id ? '#fff' : 'var(--text-muted)',
-                }}
-              >
-                {tab.label}
-              </button>
-            ))}
+            {TABS.map((tab) => {
+              const { isActive, buttonStyle, textClass, textColor } = getTabStyle(tab);
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`shrink-0 rounded-t-md px-3 transition-all duration-150 ${textClass}`}
+                  style={{ ...buttonStyle, color: textColor, height: isActive ? '36px' : '26px' }}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
+          {/* 모바일: 활성 탭 색상 가로 라인 (탭과 붙어있음) */}
+          <div
+            className="h-[6px] transition-colors duration-200 md:hidden"
+            style={{
+              backgroundColor: TABS.find((t) => t.id === activeTab)?.color,
+            }}
+          />
 
           {/* 종이 콘텐츠 */}
           <div
@@ -259,26 +272,21 @@ export default function Home() {
         >
           <div className="flex flex-col gap-1">
             {TABS.map((tab) => {
-              const isActive = activeTab === tab.id;
+              const { isActive, buttonStyle, textClass, textColor } = getTabStyle(tab);
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center justify-center rounded-r-lg transition-all duration-150 ${isActive ? 'w-[40px]' : 'w-[30px]'}`}
-                  style={{
-                    backgroundColor: tab.color,
-                    height: '80px',
-                    opacity: isActive ? 1 : 0.7,
-                    boxShadow: isActive ? 'none' : '1px 1px 3px rgba(0,0,0,0.1)',
-                  }}
+                  style={{ ...buttonStyle, height: '80px' }}
                 >
                   <span
-                    className={`text-sm ${isActive ? 'font-bold' : 'font-normal'}`}
+                    className={textClass}
                     style={{
                       writingMode: 'vertical-rl',
                       textOrientation: 'mixed',
                       whiteSpace: 'nowrap',
-                      color: isActive ? '#101010' : '#faf5eb',
+                      color: textColor,
                     }}
                   >
                     {tab.label}
