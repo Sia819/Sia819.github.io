@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { resumeData } from '@/data/resume';
 import AboutSection from '@/components/sections/AboutSection';
 import SkillsSection from '@/components/sections/SkillsSection';
@@ -20,6 +20,28 @@ type TabId = (typeof TABS)[number]['id'];
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<TabId>('about');
+  const wheelCooldown = useRef(false);
+
+  const handleWheel = useCallback(
+    (e: React.WheelEvent) => {
+      if (wheelCooldown.current) return;
+      const delta = e.deltaY;
+      if (Math.abs(delta) < 10) return;
+
+      const currentIndex = TABS.findIndex((t) => t.id === activeTab);
+      if (delta > 0 && currentIndex < TABS.length - 1) {
+        setActiveTab(TABS[currentIndex + 1].id);
+      } else if (delta < 0 && currentIndex > 0) {
+        setActiveTab(TABS[currentIndex - 1].id);
+      } else {
+        return;
+      }
+
+      wheelCooldown.current = true;
+      setTimeout(() => { wheelCooldown.current = false; }, 300);
+    },
+    [activeTab],
+  );
 
   const renderContent = () => {
     switch (activeTab) {
@@ -214,12 +236,21 @@ export default function Home() {
 
           {/* 종이 콘텐츠 */}
           <div
-            className="notebook-content paper-lines flex-1 overflow-y-auto px-8 py-8 md:px-10 md:py-10"
+            onWheel={handleWheel}
+            className="notebook-content paper-lines flex-1 overflow-hidden px-8 py-8 md:px-10 md:py-10"
             style={{ backgroundColor: 'var(--paper)' }}
           >
             {renderContent()}
           </div>
         </div>
+
+        {/* === 활성 탭 색상 라인 === */}
+        <div
+          className="hidden w-[8px] shrink-0 transition-colors duration-200 md:block"
+          style={{
+            backgroundColor: TABS.find((t) => t.id === activeTab)?.color,
+          }}
+        />
 
         {/* === 오른쪽 탭 스트립 (데스크탑) === */}
         <nav
