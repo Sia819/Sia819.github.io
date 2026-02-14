@@ -1,28 +1,28 @@
 @import 'tailwindcss';
 
 :root {
-  --paper: #f5f0e8;
-  --paper-line: #e5ddd0;
-  --kraft: #c2b49a;
-  --kraft-light: #d4c8b0;
-  --kraft-dark: #a89878;
-  --spine: #7a6e5e;
-  --spine-light: #8b7d6b;
+  --paper: #fdfcfa;
+  --paper-line: #f0ebe4;
+  --kraft: #e8dece;
+  --kraft-light: #f2ebe0;
+  --kraft-dark: #c8b99e;
+  --spine: #a09484;
+  --spine-light: #b0a494;
   --text-primary: #1c1712;
-  --text-secondary: #443a2e;
+  --text-secondary: #3e352a;
   --text-muted: #6b5e50;
-  --border-warm: #d8cfc0;
-  --desk: #c8bfb0;
+  --border-warm: #e8e2d8;
+  --desk: #f2ece3;
   --sidebar-name: #1c1712;
   --sidebar-text: #3a3024;
   --sidebar-muted: #5c5040;
-  --accent: #8b6914;
+  --accent: #c48a20;
 
-  --tab-about: #6b7f4e;
-  --tab-career: #c07830;
-  --tab-skills: #a84a38;
-  --tab-projects: #c49520;
-  --tab-education: #4e7860;
+  --tab-about: #88b468;
+  --tab-career: #e8a04c;
+  --tab-skills: #d4726a;
+  --tab-projects: #e4b84c;
+  --tab-education: #6cb496;
 }
 
 @theme inline {

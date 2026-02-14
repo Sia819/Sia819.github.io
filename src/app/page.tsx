@@ -38,7 +38,7 @@ export default function Home() {
       }
 
       wheelCooldown.current = true;
-      setTimeout(() => { wheelCooldown.current = false; }, 300);
+      setTimeout(() => { wheelCooldown.current = false; }, 200);
     },
     [activeTab],
   );
