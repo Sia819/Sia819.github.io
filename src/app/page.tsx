@@ -2,18 +2,11 @@
 
 import { useState, useCallback, useRef } from 'react';
 import { resumeData } from '@/data/resume';
-import HomeSection from '@/components/sections/HomeSection';
-import SettingsSection from '@/components/sections/SettingsSection';
-import AboutSection from '@/components/sections/AboutSection';
-import SkillsSection from '@/components/sections/SkillsSection';
-import CareerSection from '@/components/sections/CareerSection';
-import ProjectsSection from '@/components/sections/ProjectsSection';
-import EducationSection from '@/components/sections/EducationSection';
+import MarkdownSection from '@/components/sections/MarkdownSection';
+import { TAB_CONTENT } from '@/content';
 
 /* ──────────────────────────────────────────────
  * 탭 정의
- * - 정적 탭: HTML 기반 고정 페이지 (홈, 설정)
- * - 콘텐츠 탭: 향후 markdown 렌더링 대상
  * ────────────────────────────────────────────── */
 
 interface TabDef {
@@ -36,7 +29,7 @@ const TAB_PALETTE = [
   'var(--tab-palette-5)',
 ];
 
-// 동적 콘텐츠 탭 (향후 markdown 렌더링)
+// 콘텐츠 탭
 const CONTENT_TABS: readonly TabDef[] = [
   { id: 'about', label: '자기소개', icon: null },
   { id: 'career', label: '경력', icon: null },
@@ -98,7 +91,7 @@ export default function Home() {
   const wheelCooldown = useRef(false);
 
   const activeTabDef = ALL_TABS.find((t) => t.id === activeTab) ?? HOME_TAB;
-  const isStaticPage = activeTab === HOME_TAB.id || activeTab === SETTINGS_TAB.id;
+  const showPaperLines = activeTab !== HOME_TAB.id;
 
   const handleWheel = useCallback(
     (e: React.WheelEvent) => {
@@ -122,33 +115,13 @@ export default function Home() {
   );
 
   const renderContent = () => {
-    // 정적 페이지
-    switch (activeTab) {
-      case 'home':
-        return <HomeSection profile={resumeData.profile} />;
-      case 'settings':
-        return <SettingsSection />;
+    const tab = TAB_CONTENT[activeTab];
+    if (!tab) return null;
+    if (tab.type === 'markdown') {
+      return <MarkdownSection content={tab.content} accentColor={activeTabDef.color} />;
     }
-    // 동적 콘텐츠 페이지 (accentColor 전달)
-    const color = activeTabDef.color;
-    switch (activeTab) {
-      case 'about':
-        return <AboutSection paragraphs={resumeData.about} accentColor={color} />;
-      case 'career':
-        return <CareerSection careers={resumeData.careers} accentColor={color} />;
-      case 'skills':
-        return <SkillsSection skills={resumeData.skills} accentColor={color} />;
-      case 'projects':
-        return <ProjectsSection projects={resumeData.projects} accentColor={color} />;
-      case 'education':
-        return (
-          <EducationSection
-            educations={resumeData.educations}
-            certifications={resumeData.certifications}
-            accentColor={color}
-          />
-        );
-    }
+    const Component = tab.component;
+    return <Component accentColor={activeTabDef.color} />;
   };
 
   const getTabStyle = (tab: TabDef) => {
@@ -364,7 +337,7 @@ export default function Home() {
           {/* 종이 콘텐츠 */}
           <div
             onWheel={handleWheel}
-            className={`notebook-content flex-1 overflow-hidden px-8 py-8 md:px-10 md:py-10 ${!isStaticPage ? 'paper-lines' : ''}`}
+            className={`notebook-content flex-1 overflow-hidden px-8 py-8 md:px-10 md:py-10 ${showPaperLines ? 'paper-lines' : ''}`}
             style={{ backgroundColor: 'var(--paper)' }}
           >
             {renderContent()}

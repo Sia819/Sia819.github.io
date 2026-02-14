@@ -1,10 +1,12 @@
-import { Profile } from '@/types/resume';
+import { resumeData } from '@/data/resume';
 
-interface HomeSectionProps {
-  profile: Profile;
+interface HomeContentProps {
+  accentColor: string;
 }
 
-const HomeSection = ({ profile }: HomeSectionProps) => {
+const HomeContent = ({ accentColor }: HomeContentProps) => {
+  const { profile } = resumeData;
+
   return (
     <div className="flex h-full flex-col items-center justify-center text-center">
       {/* 책 표지 스타일 */}
@@ -84,4 +86,4 @@ const HomeSection = ({ profile }: HomeSectionProps) => {
   );
 };
 
-export default HomeSection;
+export default HomeContent;
