@@ -26,18 +26,12 @@ src/
 ├── types/         # TypeScript 타입 정의
 └── styles/        # 글로벌 스타일
 public/            # 정적 자산 (이미지, 폰트 등)
-content/           # 블로그 포스트 (Markdown/MDX)
-```
-
-## 코딩 컨벤션
-
-### 언어 규칙
-
+content/           # 블로그 포스트 (Markdown/MDX
 - 응답, 주석 설명: **한국어**
+- 변수명,- 응답, 주석 설명: **한국어**
 - 변수명, 함수명, 커밋 메시지, 코드 주석: **영어**
 
 ### 네이밍
-
 - 컴포넌트: PascalCase (`PostCard.tsx`)
 - 함수/변수: camelCase (`getUserName`)
 - 상수: UPPER_SNAKE_CASE (`MAX_POSTS_PER_PAGE`)
@@ -45,13 +39,11 @@ content/           # 블로그 포스트 (Markdown/MDX)
 - CSS 클래스: Tailwind 유틸리티 클래스 사용 (커스텀 클래스는 kebab-case)
 
 ### 컴포넌트 패턴
-
 - 함수형 컴포넌트 + Arrow Function 사용
 - Props 타입은 컴포넌트 파일 상단에 interface로 정의
 - `'use client'`는 필요한 경우에만 사용 (기본은 Server Component)
 
 ### 임포트 순서
-
 1. React/Next.js 내장 모듈
 2. 외부 라이브러리
 3. 내부 모듈 (`@/` alias)
@@ -63,14 +55,9 @@ Conventional Commits 형식을 따른다:
 
 ```
 <type>: <description>
-
-[optional body]
-
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ```
 
 ### 타입
-
 - `feat`: 새 기능 추가
 - `fix`: 버그 수정
 - `docs`: 문서 변경
