@@ -19,11 +19,14 @@
   --accent: #c48a20;
 
   --tab-home: #7a9ec4;
-  --tab-about: #88b468;
-  --tab-career: #e8a04c;
-  --tab-skills: #d4726a;
-  --tab-projects: #e4b84c;
-  --tab-education: #6cb496;
+  --tab-settings: #8a8a8a;
+
+  /* 콘텐츠 탭 색상 팔레트 (순환 적용) */
+  --tab-palette-1: #88b468;
+  --tab-palette-2: #e8a04c;
+  --tab-palette-3: #d4726a;
+  --tab-palette-4: #e4b84c;
+  --tab-palette-5: #6cb496;
 }
 
 @theme inline {

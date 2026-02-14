@@ -2,12 +2,13 @@ import { Career } from '@/types/resume';
 
 interface CareerSectionProps {
   careers: Career[];
+  accentColor: string;
 }
 
-const CareerSection = ({ careers }: CareerSectionProps) => {
+const CareerSection = ({ careers, accentColor }: CareerSectionProps) => {
   return (
     <div>
-      <h2 className="mb-6 text-xl font-bold" style={{ color: 'var(--tab-career)' }}>
+      <h2 className="mb-6 text-xl font-bold" style={{ color: accentColor }}>
         경력
       </h2>
       <div className="flex flex-col gap-8">
@@ -20,7 +21,7 @@ const CareerSection = ({ careers }: CareerSectionProps) => {
             {/* 타임라인 도트 */}
             <div
               className="absolute -left-[7px] top-1 h-3 w-3 rounded-full"
-              style={{ backgroundColor: 'var(--tab-career)' }}
+              style={{ backgroundColor: accentColor }}
             />
 
             <div className="mb-1 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
@@ -28,7 +29,7 @@ const CareerSection = ({ careers }: CareerSectionProps) => {
                 <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
                   {career.company}
                 </h3>
-                <p className="text-sm font-medium" style={{ color: 'var(--tab-career)' }}>
+                <p className="text-sm font-medium" style={{ color: accentColor }}>
                   {career.position}
                 </p>
               </div>

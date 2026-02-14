@@ -2,12 +2,13 @@ import { SkillCategory } from '@/types/resume';
 
 interface SkillsSectionProps {
   skills: SkillCategory[];
+  accentColor: string;
 }
 
-const SkillsSection = ({ skills }: SkillsSectionProps) => {
+const SkillsSection = ({ skills, accentColor }: SkillsSectionProps) => {
   return (
     <div>
-      <h2 className="mb-6 text-xl font-bold" style={{ color: 'var(--tab-skills)' }}>
+      <h2 className="mb-6 text-xl font-bold" style={{ color: accentColor }}>
         기술 스택
       </h2>
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">

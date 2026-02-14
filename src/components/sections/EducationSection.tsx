@@ -3,12 +3,13 @@ import { Education, Certification } from '@/types/resume';
 interface EducationSectionProps {
   educations: Education[];
   certifications: Certification[];
+  accentColor: string;
 }
 
-const EducationSection = ({ educations, certifications }: EducationSectionProps) => {
+const EducationSection = ({ educations, certifications, accentColor }: EducationSectionProps) => {
   return (
     <div>
-      <h2 className="mb-6 text-xl font-bold" style={{ color: 'var(--tab-education)' }}>
+      <h2 className="mb-6 text-xl font-bold" style={{ color: accentColor }}>
         학력 &amp; 자격증
       </h2>
 
@@ -28,7 +29,7 @@ const EducationSection = ({ educations, certifications }: EducationSectionProps)
                 {edu.period}
               </span>
             </div>
-            <p className="text-sm font-medium" style={{ color: 'var(--tab-education)' }}>
+            <p className="text-sm font-medium" style={{ color: accentColor }}>
               {edu.degree}
             </p>
             {edu.description && (

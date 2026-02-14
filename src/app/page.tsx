@@ -3,22 +3,54 @@
 import { useState, useCallback, useRef } from 'react';
 import { resumeData } from '@/data/resume';
 import HomeSection from '@/components/sections/HomeSection';
+import SettingsSection from '@/components/sections/SettingsSection';
 import AboutSection from '@/components/sections/AboutSection';
 import SkillsSection from '@/components/sections/SkillsSection';
 import CareerSection from '@/components/sections/CareerSection';
 import ProjectsSection from '@/components/sections/ProjectsSection';
 import EducationSection from '@/components/sections/EducationSection';
 
-const TABS = [
-  { id: 'home', label: '', icon: true, color: 'var(--tab-home)' },
-  { id: 'about', label: '자기소개', icon: false, color: 'var(--tab-about)' },
-  { id: 'career', label: '경력', icon: false, color: 'var(--tab-career)' },
-  { id: 'skills', label: '기술', icon: false, color: 'var(--tab-skills)' },
-  { id: 'projects', label: '포트폴리오', icon: false, color: 'var(--tab-projects)' },
-  { id: 'education', label: '학력', icon: false, color: 'var(--tab-education)' },
-] as const;
+/* ──────────────────────────────────────────────
+ * 탭 정의
+ * - 정적 탭: HTML 기반 고정 페이지 (홈, 설정)
+ * - 콘텐츠 탭: 향후 markdown 렌더링 대상
+ * ────────────────────────────────────────────── */
 
-type TabId = (typeof TABS)[number]['id'];
+interface TabDef {
+  readonly id: string;
+  readonly label: string;
+  readonly icon: 'home' | 'settings' | null;
+  readonly color: string;
+}
+
+// 정적 페이지 탭 (고정 위치)
+const HOME_TAB: TabDef = { id: 'home', label: '', icon: 'home', color: 'var(--tab-home)' };
+const SETTINGS_TAB: TabDef = { id: 'settings', label: '', icon: 'settings', color: 'var(--tab-settings)' };
+
+// 콘텐츠 탭 색상 팔레트 (CSS 변수와 동기화, 순환 적용)
+const TAB_PALETTE = [
+  'var(--tab-palette-1)',
+  'var(--tab-palette-2)',
+  'var(--tab-palette-3)',
+  'var(--tab-palette-4)',
+  'var(--tab-palette-5)',
+];
+
+// 동적 콘텐츠 탭 (향후 markdown 렌더링)
+const CONTENT_TABS: readonly TabDef[] = [
+  { id: 'about', label: '자기소개', icon: null },
+  { id: 'career', label: '경력', icon: null },
+  { id: 'skills', label: '기술', icon: null },
+  { id: 'projects', label: '포트폴리오', icon: null },
+  { id: 'education', label: '학력', icon: null },
+].map((tab, i) => ({ ...tab, color: TAB_PALETTE[i % TAB_PALETTE.length] }));
+
+// 전체 탭 순서 (휠 네비게이션용)
+const ALL_TABS: readonly TabDef[] = [HOME_TAB, ...CONTENT_TABS, SETTINGS_TAB];
+
+/* ──────────────────────────────────────────────
+ * 아이콘 컴포넌트
+ * ────────────────────────────────────────────── */
 
 const HomeIcon = ({ color }: { color: string }) => (
   <svg
@@ -36,9 +68,37 @@ const HomeIcon = ({ color }: { color: string }) => (
   </svg>
 );
 
+const GearIcon = ({ color }: { color: string }) => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={color}
+    strokeWidth="2.5"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="12" r="3" />
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+  </svg>
+);
+
+const TabIcon = ({ icon, color }: { icon: 'home' | 'settings'; color: string }) => {
+  if (icon === 'home') return <HomeIcon color={color} />;
+  return <GearIcon color={color} />;
+};
+
+/* ──────────────────────────────────────────────
+ * 메인 컴포넌트
+ * ────────────────────────────────────────────── */
+
 export default function Home() {
-  const [activeTab, setActiveTab] = useState<TabId>('home');
+  const [activeTab, setActiveTab] = useState(HOME_TAB.id);
   const wheelCooldown = useRef(false);
+
+  const activeTabDef = ALL_TABS.find((t) => t.id === activeTab) ?? HOME_TAB;
+  const isStaticPage = activeTab === HOME_TAB.id || activeTab === SETTINGS_TAB.id;
 
   const handleWheel = useCallback(
     (e: React.WheelEvent) => {
@@ -46,44 +106,52 @@ export default function Home() {
       const delta = e.deltaY;
       if (Math.abs(delta) < 10) return;
 
-      const currentIndex = TABS.findIndex((t) => t.id === activeTab);
-      if (delta > 0 && currentIndex < TABS.length - 1) {
-        setActiveTab(TABS[currentIndex + 1].id);
+      const currentIndex = ALL_TABS.findIndex((t) => t.id === activeTab);
+      if (delta > 0 && currentIndex < ALL_TABS.length - 1) {
+        setActiveTab(ALL_TABS[currentIndex + 1].id);
       } else if (delta < 0 && currentIndex > 0) {
-        setActiveTab(TABS[currentIndex - 1].id);
+        setActiveTab(ALL_TABS[currentIndex - 1].id);
       } else {
         return;
       }
 
       wheelCooldown.current = true;
-      setTimeout(() => { wheelCooldown.current = false; }, 200);
+      setTimeout(() => { wheelCooldown.current = false; }, 30);
     },
     [activeTab],
   );
 
   const renderContent = () => {
+    // 정적 페이지
     switch (activeTab) {
       case 'home':
         return <HomeSection profile={resumeData.profile} />;
+      case 'settings':
+        return <SettingsSection />;
+    }
+    // 동적 콘텐츠 페이지 (accentColor 전달)
+    const color = activeTabDef.color;
+    switch (activeTab) {
       case 'about':
-        return <AboutSection paragraphs={resumeData.about} />;
+        return <AboutSection paragraphs={resumeData.about} accentColor={color} />;
       case 'career':
-        return <CareerSection careers={resumeData.careers} />;
+        return <CareerSection careers={resumeData.careers} accentColor={color} />;
       case 'skills':
-        return <SkillsSection skills={resumeData.skills} />;
+        return <SkillsSection skills={resumeData.skills} accentColor={color} />;
       case 'projects':
-        return <ProjectsSection projects={resumeData.projects} />;
+        return <ProjectsSection projects={resumeData.projects} accentColor={color} />;
       case 'education':
         return (
           <EducationSection
             educations={resumeData.educations}
             certifications={resumeData.certifications}
+            accentColor={color}
           />
         );
     }
   };
 
-  const getTabStyle = (tab: (typeof TABS)[number]) => {
+  const getTabStyle = (tab: TabDef) => {
     const isActive = activeTab === tab.id;
     return {
       isActive,
@@ -97,11 +165,55 @@ export default function Home() {
     };
   };
 
+  /* 탭 버튼 렌더 (데스크탑 세로) */
+  const renderDesktopTab = (tab: TabDef) => {
+    const { isActive, buttonStyle, textClass, textColor } = getTabStyle(tab);
+    return (
+      <button
+        key={tab.id}
+        onClick={() => setActiveTab(tab.id)}
+        className={`flex items-center justify-center rounded-r-lg transition-all duration-150 ${isActive ? 'w-[40px]' : 'w-[30px]'}`}
+        style={{ ...buttonStyle, height: tab.icon ? '40px' : '80px' }}
+      >
+        {tab.icon ? (
+          <TabIcon icon={tab.icon} color={textColor} />
+        ) : (
+          <span
+            className={textClass}
+            style={{
+              writingMode: 'vertical-rl',
+              textOrientation: 'mixed',
+              whiteSpace: 'nowrap',
+              color: textColor,
+            }}
+          >
+            {tab.label}
+          </span>
+        )}
+      </button>
+    );
+  };
+
+  /* 탭 버튼 렌더 (모바일 가로) */
+  const renderMobileTab = (tab: TabDef) => {
+    const { isActive, buttonStyle, textClass, textColor } = getTabStyle(tab);
+    return (
+      <button
+        key={tab.id}
+        onClick={() => setActiveTab(tab.id)}
+        className={`shrink-0 rounded-t-md px-3 transition-all duration-150 ${tab.icon ? '' : textClass}`}
+        style={{ ...buttonStyle, color: textColor, height: isActive ? '36px' : '26px' }}
+      >
+        {tab.icon ? <TabIcon icon={tab.icon} color={textColor} /> : tab.label}
+      </button>
+    );
+  };
+
   const { profile } = resumeData;
 
   return (
     <div className="flex h-screen items-stretch justify-center">
-      {/* 노트북 전체 컨테이너 - 넓은 화면에서 공책처럼 중앙 정렬 */}
+      {/* 노트북 전체 컨테이너 */}
       <div
         className="relative flex w-full overflow-hidden xl:max-w-[1100px] xl:my-6 xl:rounded-md"
         style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.12)' }}
@@ -112,15 +224,12 @@ export default function Home() {
           className="hidden w-[260px] shrink-0 flex-col items-center px-6 py-10 md:flex"
           style={{ backgroundColor: 'var(--kraft)' }}
         >
-          {/* 프로필 아바타 */}
           <img
             src="https://avatars.githubusercontent.com/u/18740181"
             alt={profile.name}
             className="mb-5 h-28 w-28 rounded-full object-cover"
             style={{ border: '3px solid var(--kraft-light)' }}
           />
-
-          {/* 이름 & 직함 */}
           <h1
             className="mb-1 text-center text-xl font-bold"
             style={{ color: 'var(--sidebar-name)' }}
@@ -139,14 +248,10 @@ export default function Home() {
           >
             {profile.subtitle}
           </p>
-
-          {/* 구분선 */}
           <div
             className="mb-6 w-full"
             style={{ borderTop: '1px solid var(--kraft-dark)' }}
           />
-
-          {/* 연락처 */}
           <div className="mb-6 flex w-full flex-col gap-2 text-sm">
             {profile.email && (
               <div className="flex items-start gap-2">
@@ -169,8 +274,6 @@ export default function Home() {
               </div>
             )}
           </div>
-
-          {/* 소셜 링크 */}
           <div className="flex w-full flex-col gap-2">
             {profile.links.map((link) => (
               <a
@@ -203,7 +306,6 @@ export default function Home() {
             background: `linear-gradient(to right, var(--spine), var(--spine-light))`,
           }}
         >
-          {/* 바인더 링 구멍 */}
           {[0, 1, 2, 3, 4].map((i) => (
             <div
               key={i}
@@ -245,32 +347,24 @@ export default function Home() {
             className="flex h-[44px] items-end gap-1 overflow-x-auto px-4 md:hidden"
             style={{ backgroundColor: 'var(--paper)' }}
           >
-            {TABS.map((tab) => {
-              const { isActive, buttonStyle, textClass, textColor } = getTabStyle(tab);
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`shrink-0 rounded-t-md px-3 transition-all duration-150 ${tab.icon ? '' : textClass}`}
-                  style={{ ...buttonStyle, color: textColor, height: isActive ? '36px' : '26px' }}
-                >
-                  {tab.icon ? <HomeIcon color={textColor} /> : tab.label}
-                </button>
-              );
-            })}
+            {/* 홈 (정적) */}
+            {renderMobileTab(HOME_TAB)}
+            {/* 콘텐츠 탭 (동적) */}
+            {CONTENT_TABS.map(renderMobileTab)}
+            {/* 설정 (정적, 오른쪽 끝으로 밀기) */}
+            <div className="flex-1" />
+            {renderMobileTab(SETTINGS_TAB)}
           </div>
-          {/* 모바일: 활성 탭 색상 가로 라인 (탭과 붙어있음) */}
+          {/* 모바일: 활성 탭 색상 가로 라인 */}
           <div
             className="h-[6px] transition-colors duration-200 md:hidden"
-            style={{
-              backgroundColor: TABS.find((t) => t.id === activeTab)?.color,
-            }}
+            style={{ backgroundColor: activeTabDef.color }}
           />
 
           {/* 종이 콘텐츠 */}
           <div
             onWheel={handleWheel}
-            className={`notebook-content flex-1 overflow-hidden px-8 py-8 md:px-10 md:py-10 ${activeTab !== 'home' ? 'paper-lines' : ''}`}
+            className={`notebook-content flex-1 overflow-hidden px-8 py-8 md:px-10 md:py-10 ${!isStaticPage ? 'paper-lines' : ''}`}
             style={{ backgroundColor: 'var(--paper)' }}
           >
             {renderContent()}
@@ -280,44 +374,26 @@ export default function Home() {
         {/* === 활성 탭 색상 라인 === */}
         <div
           className="hidden w-[8px] shrink-0 transition-colors duration-200 md:block"
-          style={{
-            backgroundColor: TABS.find((t) => t.id === activeTab)?.color,
-          }}
+          style={{ backgroundColor: activeTabDef.color }}
         />
 
         {/* === 오른쪽 탭 스트립 (데스크탑) === */}
         <nav
-          className="relative hidden w-[40px] shrink-0 md:flex md:flex-col md:items-start md:pt-6"
+          className="relative hidden w-[40px] shrink-0 md:flex md:flex-col md:items-start md:py-6"
           style={{ marginRight: '10px' }}
         >
+          {/* 상단: 홈 + 콘텐츠 탭 */}
           <div className="flex flex-col gap-1">
-            {TABS.map((tab) => {
-              const { isActive, buttonStyle, textClass, textColor } = getTabStyle(tab);
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center justify-center rounded-r-lg transition-all duration-150 ${isActive ? 'w-[40px]' : 'w-[30px]'}`}
-                  style={{ ...buttonStyle, height: tab.icon ? '40px' : '80px' }}
-                >
-                  {tab.icon ? (
-                    <HomeIcon color={textColor} />
-                  ) : (
-                    <span
-                      className={textClass}
-                      style={{
-                        writingMode: 'vertical-rl',
-                        textOrientation: 'mixed',
-                        whiteSpace: 'nowrap',
-                        color: textColor,
-                      }}
-                    >
-                      {tab.label}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
+            {renderDesktopTab(HOME_TAB)}
+            {CONTENT_TABS.map(renderDesktopTab)}
+          </div>
+
+          {/* 스페이서 */}
+          <div className="flex-1" />
+
+          {/* 하단: 설정 탭 (고정) */}
+          <div className="flex flex-col gap-1">
+            {renderDesktopTab(SETTINGS_TAB)}
           </div>
         </nav>
       </div>

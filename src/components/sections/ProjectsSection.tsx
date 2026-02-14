@@ -2,12 +2,13 @@ import { Project } from '@/types/resume';
 
 interface ProjectsSectionProps {
   projects: Project[];
+  accentColor: string;
 }
 
-const ProjectsSection = ({ projects }: ProjectsSectionProps) => {
+const ProjectsSection = ({ projects, accentColor }: ProjectsSectionProps) => {
   return (
     <div>
-      <h2 className="mb-6 text-xl font-bold" style={{ color: 'var(--tab-projects)' }}>
+      <h2 className="mb-6 text-xl font-bold" style={{ color: accentColor }}>
         포트폴리오
       </h2>
       <div className="flex flex-col gap-5">
@@ -30,7 +31,7 @@ const ProjectsSection = ({ projects }: ProjectsSectionProps) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs underline"
-                  style={{ color: 'var(--tab-projects)' }}
+                  style={{ color: accentColor }}
                 >
                   Link
                 </a>
@@ -47,8 +48,8 @@ const ProjectsSection = ({ projects }: ProjectsSectionProps) => {
                   key={tech}
                   className="rounded px-2 py-0.5 text-xs"
                   style={{
-                    backgroundColor: 'rgba(196, 149, 32, 0.15)',
-                    color: 'var(--tab-projects)',
+                    backgroundColor: 'var(--kraft-light)',
+                    color: accentColor,
                   }}
                 >
                   {tech}
