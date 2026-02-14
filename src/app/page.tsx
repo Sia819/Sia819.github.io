@@ -254,7 +254,7 @@ export default function Home() {
 
         {/* === 오른쪽 탭 스트립 (데스크탑) === */}
         <nav
-          className="relative hidden shrink-0 md:flex md:flex-col md:items-start md:pt-6"
+          className="relative hidden w-[40px] shrink-0 md:flex md:flex-col md:items-start md:pt-6"
           style={{ marginRight: '10px' }}
         >
           <div className="flex flex-col gap-1">
@@ -264,24 +264,21 @@ export default function Home() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className="flex w-[40px] items-center justify-center rounded-r-lg transition-all"
+                  className={`flex items-center justify-center rounded-r-lg transition-all duration-150 ${isActive ? 'w-[40px]' : 'w-[30px]'}`}
                   style={{
                     backgroundColor: tab.color,
                     height: '80px',
                     opacity: isActive ? 1 : 0.7,
-                    boxShadow: isActive
-                      ? '3px 2px 8px rgba(0,0,0,0.25)'
-                      : '1px 1px 3px rgba(0,0,0,0.1)',
+                    boxShadow: isActive ? 'none' : '1px 1px 3px rgba(0,0,0,0.1)',
                   }}
                 >
                   <span
-                    className="text-sm font-bold"
+                    className={`text-sm ${isActive ? 'font-bold' : 'font-normal'}`}
                     style={{
                       writingMode: 'vertical-rl',
                       textOrientation: 'mixed',
                       whiteSpace: 'nowrap',
-                      color: '#faf5eb',
-                      textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+                      color: isActive ? '#101010' : '#faf5eb',
                     }}
                   >
                     {tab.label}
