@@ -1,26 +1,62 @@
 @import 'tailwindcss';
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f5f0e8;
+  --paper-line: #e5ddd0;
+  --kraft: #c2b49a;
+  --kraft-light: #d4c8b0;
+  --kraft-dark: #a89878;
+  --spine: #7a6e5e;
+  --spine-light: #8b7d6b;
+  --text-primary: #1c1712;
+  --text-secondary: #443a2e;
+  --text-muted: #6b5e50;
+  --border-warm: #d8cfc0;
+  --desk: #c8bfb0;
+  --sidebar-name: #1c1712;
+  --sidebar-text: #3a3024;
+  --sidebar-muted: #5c5040;
+  --accent: #8b6914;
+
+  --tab-about: #6b7f4e;
+  --tab-career: #c07830;
+  --tab-skills: #a84a38;
+  --tab-projects: #c49520;
+  --tab-education: #4e7860;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--desk);
+  --color-foreground: var(--text-primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: var(--desk);
+  color: var(--text-primary);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* 노트북 페이퍼 라인 */
+.paper-lines {
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 31px,
+    var(--paper-line) 31px,
+    var(--paper-line) 32px
+  );
+  background-position: 0 8px;
+}
+
+/* 스크롤바 커스텀 */
+.notebook-content::-webkit-scrollbar {
+  width: 6px;
+}
+.notebook-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.notebook-content::-webkit-scrollbar-thumb {
+  background: var(--kraft-dark);
+  border-radius: 3px;
 }

@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Sia819',
+  title: 'Sia819 - Portfolio',
   description: 'Sia819 Portfolio & Blog',
 };
 
