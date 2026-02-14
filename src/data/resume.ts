@@ -5,7 +5,7 @@ export const resumeData: ResumeData = {
     name: 'Sia819',
     title: 'Software Developer',
     subtitle: '효율적이고 유지보수 가능한 코드를 지향하는 개발자',
-    email: 'your-email@example.com',
+    email: 'lunasia819@gmail.com',
     location: 'Seoul, South Korea',
     links: [
       { label: 'GitHub', url: 'https://github.com/Sia819' },

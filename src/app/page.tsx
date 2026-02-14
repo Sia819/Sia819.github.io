@@ -254,8 +254,8 @@ export default function Home() {
           />
           <div className="mb-6 flex w-full flex-col gap-2 text-sm">
             {profile.email && (
-              <div className="flex items-start gap-2">
-                <span style={{ color: 'var(--sidebar-muted)' }}>@</span>
+              <div className="flex items-center gap-2">
+                <span className="inline-flex w-4 shrink-0 justify-center" style={{ color: 'var(--sidebar-muted)' }}>@</span>
                 <a
                   href={`mailto:${profile.email}`}
                   className="break-all underline-offset-2 hover:underline"
@@ -266,8 +266,8 @@ export default function Home() {
               </div>
             )}
             {profile.location && (
-              <div className="flex items-start gap-2">
-                <span style={{ color: 'var(--sidebar-muted)' }}>&#9906;</span>
+              <div className="flex items-center gap-2">
+                <span className="inline-flex w-4 shrink-0 justify-center" style={{ color: 'var(--sidebar-muted)' }}>&#9906;</span>
                 <span style={{ color: 'var(--sidebar-text)' }}>
                   {profile.location}
                 </span>
