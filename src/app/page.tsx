@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useCallback, useRef, useEffect } from 'react';
 import { resumeData } from '@/data/resume';
 import MarkdownSection from '@/components/sections/MarkdownSection';
 import { TAB_CONTENT } from '@/content';
+import useTabWheel from '@/hooks/useTabWheel';
 
 /* ──────────────────────────────────────────────
  * 탭 정의
@@ -87,45 +87,17 @@ const TabIcon = ({ icon, color }: { icon: 'home' | 'settings'; color: string }) 
  * ────────────────────────────────────────────── */
 
 export default function Home() {
-  const [activeTab, setActiveTab] = useState(HOME_TAB.id);
-  const [hint, setHint] = useState<{ tab: TabDef; direction: 'up' | 'down' } | null>(null);
-  const wheelCooldown = useRef(false);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const boundaryTime = useRef<number>(0);
-  const hintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const {
+    activeTab,
+    setActiveTab,
+    hint,
+    contentRef,
+    handleOuterWheel,
+    handleContentWheel,
+  } = useTabWheel(ALL_TABS, HOME_TAB.id);
 
   const activeTabDef = ALL_TABS.find((t) => t.id === activeTab) ?? HOME_TAB;
   const showPaperLines = activeTab !== HOME_TAB.id;
-
-  // 탭 변경 시 스크롤 초기화
-  useEffect(() => {
-    setHint(null);
-    boundaryTime.current = 0;
-    if (hintTimer.current) { clearTimeout(hintTimer.current); hintTimer.current = null; }
-    if (contentRef.current) contentRef.current.scrollTop = 0;
-  }, [activeTab]);
-
-  // 콘텐츠 외부에서 휠 → 탭 전환
-  const handleWheel = useCallback(
-    (e: React.WheelEvent) => {
-      if (wheelCooldown.current) return;
-      const delta = e.deltaY;
-      if (Math.abs(delta) < 10) return;
-
-      const idx = ALL_TABS.findIndex((t) => t.id === activeTab);
-      if (delta > 0 && idx < ALL_TABS.length - 1) {
-        setActiveTab(ALL_TABS[idx + 1].id);
-      } else if (delta < 0 && idx > 0) {
-        setActiveTab(ALL_TABS[idx - 1].id);
-      } else {
-        return;
-      }
-
-      wheelCooldown.current = true;
-      setTimeout(() => { wheelCooldown.current = false; }, 30);
-    },
-    [activeTab],
-  );
 
   const renderContent = () => {
     const tab = TAB_CONTENT[activeTab];
@@ -201,7 +173,7 @@ export default function Home() {
     <div className="flex h-screen items-stretch justify-center">
       {/* 노트북 전체 컨테이너 */}
       <div
-        onWheel={handleWheel}
+        onWheel={handleOuterWheel}
         className="relative flex w-full overflow-hidden xl:max-w-[1100px] xl:my-6 xl:rounded-md"
         style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.12)' }}
       >
@@ -355,35 +327,8 @@ export default function Home() {
           >
             <div
               ref={contentRef}
-              onWheel={(e) => {
-                const el = e.currentTarget;
-                const isScrollable = el.scrollHeight > el.clientHeight;
-                if (!isScrollable) return;
-                const atTop = el.scrollTop <= 0;
-                const atBtm = el.scrollTop + el.clientHeight >= el.scrollHeight - 1;
-                const goDown = e.deltaY > 0;
-                const atBoundary = (goDown && atBtm) || (!goDown && atTop);
-                if (atBoundary) {
-                  if (!boundaryTime.current) {
-                    boundaryTime.current = Date.now();
-                    const idx = ALL_TABS.findIndex((t) => t.id === activeTab);
-                    const target = goDown ? ALL_TABS[idx + 1] : ALL_TABS[idx - 1];
-                    if (target && !hintTimer.current) {
-                      const dir = goDown ? 'down' as const : 'up' as const;
-                      hintTimer.current = setTimeout(() => setHint({ tab: target, direction: dir }), 1000);
-                    }
-                  }
-                  if (Date.now() - boundaryTime.current < 1000) {
-                    e.stopPropagation();
-                  }
-                  return;
-                }
-                boundaryTime.current = 0;
-                if (hintTimer.current) { clearTimeout(hintTimer.current); hintTimer.current = null; }
-                setHint(null);
-                e.stopPropagation();
-              }}
-              className="notebook-content h-full overflow-y-auto scroll-smooth py-8 pl-8 pr-4 mr-3 md:py-10 md:pl-10 md:pr-6 md:mr-4"
+              onWheel={handleContentWheel}
+              className="notebook-content h-full overflow-y-auto py-8 pl-8 pr-4 mr-3 md:py-10 md:pl-10 md:pr-6 md:mr-4"
             >
               {renderContent()}
             </div>
