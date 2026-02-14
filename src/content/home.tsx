@@ -81,6 +81,14 @@ const HomeContent = ({ accentColor }: HomeContentProps) => {
             ))}
           </div>
         </div>
+
+        {/* 이름 */}
+        <h1
+          className="text-3xl font-bold tracking-wide"
+          style={{ color: 'var(--text-primary)' }}
+        >
+          (템플릿 표시용 임시 데이터를 사용하여 테스트 중 입니다. 작성된 내용은 사실과 다를 수 있습니다.)
+        </h1>
       </div>
     </div>
   );
