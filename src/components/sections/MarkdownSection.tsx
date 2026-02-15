@@ -113,10 +113,16 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
 
       return (
         <li
-          className="text-[15px] leading-[1.8] before:mr-2 before:content-['•']"
-          style={{ color: 'var(--text-secondary)' }}
+          className="flex list-none text-[15px]"
+          style={{ color: 'var(--text-secondary)', minHeight: 'calc(1.5em + 6px)' }}
         >
-          {children}
+          <span
+            className="mr-0.5 flex w-6 shrink-0 items-center justify-center"
+            style={{ fontSize: '1.5em', lineHeight: 1, fontFamily: 'Arial' }}
+          >
+            •
+          </span>
+          <span className="min-w-0 flex-1 leading-[1.8]">{children}</span>
         </li>
       );
     },
