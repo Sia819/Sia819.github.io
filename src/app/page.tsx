@@ -2,7 +2,7 @@
 
 import { resumeData } from '@/data/resume';
 import MarkdownSection from '@/components/sections/MarkdownSection';
-import { TAB_CONTENT } from '@/content';
+import { TAB_CONTENT, CONTENT_TAB_DEFS } from '@/content';
 import useTabWheel from '@/hooks/useTabWheel';
 
 /* ──────────────────────────────────────────────
@@ -29,14 +29,12 @@ const TAB_PALETTE = [
   'var(--tab-palette-5)',
 ];
 
-// 콘텐츠 탭
-const CONTENT_TABS: readonly TabDef[] = [
-  { id: 'about', label: '자기소개', icon: null },
-  { id: 'career', label: '경력', icon: null },
-  { id: 'skills', label: '기술', icon: null },
-  { id: 'projects', label: '포트폴리오', icon: null },
-  { id: 'education', label: '학력', icon: null },
-].map((tab, i) => ({ ...tab, color: TAB_PALETTE[i % TAB_PALETTE.length] }));
+// 콘텐츠 탭 (content/index.ts에서 동적으로 생성)
+const CONTENT_TABS: readonly TabDef[] = CONTENT_TAB_DEFS.map((tab, i) => ({
+  ...tab,
+  icon: null,
+  color: TAB_PALETTE[i % TAB_PALETTE.length],
+}));
 
 // 전체 탭 순서 (휠 네비게이션용)
 const ALL_TABS: readonly TabDef[] = [HOME_TAB, ...CONTENT_TABS, SETTINGS_TAB];
