@@ -31,12 +31,12 @@ type CalloutType = 'NOTE' | 'TIP' | 'WARNING' | 'IMPORTANT';
 
 const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
   const components: Components = {
-    // --- Headings ---
+    // --- Headings (Notion 스타일) ---
     h1: ({ children, id }) => (
       <h1
         id={id}
-        className="mb-6 mt-2 text-2xl font-bold first:mt-0"
-        style={{ color: 'var(--text-primary)' }}
+        className="mt-2 mb-4 first:mt-0"
+        style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '1.875em', lineHeight: 1.3 }}
       >
         {children}
       </h1>
@@ -44,8 +44,8 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
     h2: ({ children, id }) => (
       <h2
         id={id}
-        className="mt-10 mb-4 text-xl font-semibold first:mt-0"
-        style={{ color: 'var(--text-primary)', borderBottom: '1px solid var(--border-warm)', paddingBottom: '0.4rem' }}
+        className="mt-10 mb-4 first:mt-0"
+        style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '1.5em', lineHeight: 1.3 }}
       >
         {children}
       </h2>
@@ -53,8 +53,8 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
     h3: ({ children, id }) => (
       <h3
         id={id}
-        className="mt-6 mb-3 text-base font-semibold"
-        style={{ color: 'var(--text-primary)' }}
+        className="mt-6 mb-3"
+        style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '1.25em', lineHeight: 1.3 }}
       >
         {children}
       </h3>
@@ -62,8 +62,8 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
     h4: ({ children, id }) => (
       <h4
         id={id}
-        className="mt-4 mb-2 text-sm font-semibold"
-        style={{ color: 'var(--text-muted)' }}
+        className="mt-4 mb-2"
+        style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '1em', lineHeight: 1.3 }}
       >
         {children}
       </h4>
@@ -89,10 +89,10 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
 
     // --- Lists ---
     ul: ({ children }) => (
-      <ul className="mb-4 flex flex-col gap-1.5 pl-1">{children}</ul>
+      <ul className="mb-2 flex flex-col gap-0.5 pl-1">{children}</ul>
     ),
     ol: ({ children }) => (
-      <ol className="mb-4 flex list-decimal flex-col gap-1.5 pl-6">{children}</ol>
+      <ol className="mb-2 flex list-decimal flex-col gap-0.5 pl-6">{children}</ol>
     ),
     li: ({ children, node }) => {
       // task-list-item 감지 (GFM 체크박스)
