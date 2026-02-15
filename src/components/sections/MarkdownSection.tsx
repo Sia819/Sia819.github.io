@@ -89,10 +89,10 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
 
     // --- Lists ---
     ul: ({ children }) => (
-      <ul className="mb-2 flex flex-col gap-0.5 pl-1">{children}</ul>
+      <ul className="mb-2 list-disc space-y-0.5 pl-6">{children}</ul>
     ),
     ol: ({ children }) => (
-      <ol className="mb-2 flex list-decimal flex-col gap-0.5 pl-6">{children}</ol>
+      <ol className="mb-2 list-decimal space-y-0.5 pl-6">{children}</ol>
     ),
     li: ({ children, node }) => {
       // task-list-item 감지 (GFM 체크박스)
@@ -103,7 +103,7 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
       if (isTaskItem) {
         return (
           <li
-            className="flex items-start gap-2 text-[15px] leading-[1.8] list-none"
+            className="flex list-none items-start gap-2 text-[15px] leading-[1.8]"
             style={{ color: 'var(--text-secondary)' }}
           >
             {children}
@@ -113,16 +113,10 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
 
       return (
         <li
-          className="flex list-none text-[15px]"
-          style={{ color: 'var(--text-secondary)', minHeight: 'calc(1.5em + 6px)' }}
+          className="text-[15px] leading-[1.8]"
+          style={{ color: 'var(--text-secondary)' }}
         >
-          <span
-            className="mr-0.5 flex w-6 shrink-0 items-center justify-center"
-            style={{ fontSize: '1.5em', lineHeight: 1, fontFamily: 'Arial' }}
-          >
-            •
-          </span>
-          <span className="min-w-0 flex-1 leading-[1.8]">{children}</span>
+          {children}
         </li>
       );
     },
