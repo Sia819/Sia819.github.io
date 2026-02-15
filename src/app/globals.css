@@ -75,6 +75,33 @@ body {
   scrollbar-color: var(--kraft-dark) var(--border-warm);
 }
 
+/* 토글 (details/summary) 마커 스타일 */
+details summary {
+  list-style: none;
+}
+details summary::before {
+  content: '▶';
+  display: inline-block;
+  margin-right: 0.5rem;
+  font-size: 0.7em;
+  transition: transform 0.2s ease;
+}
+details[open] > summary::before {
+  transform: rotate(90deg);
+}
+details[open] > summary {
+  border-bottom: 1px solid var(--border-warm);
+  margin-bottom: 0;
+}
+details > *:not(summary) {
+  padding: 0.75rem 1rem;
+}
+
+/* 콜아웃 내부 마진 리셋 */
+.callout-content p:last-child {
+  margin-bottom: 0;
+}
+
 /* 힌트 페이드인 */
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(6px); }
