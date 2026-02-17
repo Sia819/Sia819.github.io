@@ -9,7 +9,7 @@ export const resumeData: ResumeData = {
     location: 'Seoul, South Korea',
     links: [
       { label: 'GitHub', url: 'https://github.com/Sia819' },
-      { label: 'Blog', url: 'https://sia819.github.io' },
+      { label: 'LinkedIn', url: 'https://www.linkedin.com/in/soung-gyu-jin/' },
     ],
   },
 

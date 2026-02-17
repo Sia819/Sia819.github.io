@@ -6,9 +6,17 @@
 
 ---
 
-# 자격증
-- 정보처리기사 | 국가기술자격증 | 한국산업인력공단 | 2025.12.24
-- SW개발_L5 | 일학습병행자격증 | 한국산업인력공단 | 2023.03.07
+# 자격 & 수료
+
+**자격증**
+- [정보처리기사](/certificates/정보처리기사.svg) | 국가기술자격증 | 한국산업인력공단 | 2025.12.24
+- [SW개발_L5](/certificates/SW개발_L5.svg) | 일학습병행자격증 | 한국산업인력공단 | 2023.03.07
+
+**수료증**
+- [Google AI Essentials](/certificates/google-ai-essentials.svg) | Google | 2025.08
+- [머신러닝/딥러닝 고급 기술과 AWS 클라우드 실습](/certificates/ml-aws-cloud.svg) | (재)경남테크노파크 | 2022.09
+- [지식공학, 머신러닝/딥러닝을 활용한 AI 서비스 기획 및 구현](/certificates/ml-ai-service.svg) | (재)경남테크노파크 | 2022.12
+- [파이썬 활용 인공지능 이론과 실습](/certificates/python-ai.svg) | (재)경남테크노파크 | 2022.06
 
 ---
 
@@ -17,23 +25,24 @@
 Unity Full-Stack Developer | 2023.08 - 2025.09 (2년 2개월)  
 VR·AR·XR 메타버스 솔루션 개발 SI 기업
 
-**[프로젝트 리딩]**  
+### **[프로젝트 리딩]**
 Unity 프로젝트 "디지털 트윈 팩토리" 메인 개발 리드
-- 요구사항 분석 → 아키텍처 설계 → 릴리즈까지 전 과정 주도
-- 
 
-**[프로젝트 참여]**  
+- 요구사항 분석 → 아키텍처 설계 및 구현 → 릴리즈까지 전 과정 주도
+- ASP.NET Core + EF Core + PostgreSQL 기반 REST API 서버 구축
+- 데이터 모델링, CRUD API 설계·구현, JWT 인증 처리
+
+### **[프로젝트 참여]**  
 Unity SI 프로젝트 5건 이상 참여
 - 프로젝트 공통 모듈 설계 및 기능 개발·유지보수
 
 **[백엔드]**  
-ASP.NET Core + EF Core + PostgreSQL 기반 REST API 서버 구축
-- 데이터 모델링, CRUD API 설계·구현, JWT 인증 처리
+
 
 **[기타]**
 - WPF 기반 국방 과제 클라이언트 개발 참여
 
-## Inje University
+## Inje University (인제대학교)
 
 **컴퓨터공학부 컴퓨터공학과 학사** | 2016.03 - 2025.02
 
