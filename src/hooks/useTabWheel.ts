@@ -39,6 +39,24 @@ const useTabWheel = (allTabs: readonly TabDef[], initialTabId: string) => {
     if (contentRef.current) contentRef.current.scrollTop = 0;
   }, [activeTab]);
 
+  // 키보드 위/아래 화살표 → 탭 전환
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+      e.preventDefault();
+
+      const idx = allTabs.findIndex((t) => t.id === activeTab);
+      if (e.key === 'ArrowDown' && idx < allTabs.length - 1) {
+        setActiveTab(allTabs[idx + 1].id);
+      } else if (e.key === 'ArrowUp' && idx > 0) {
+        setActiveTab(allTabs[idx - 1].id);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeTab, allTabs]);
+
   // 콘텐츠 외부에서 휠 → 탭 전환
   const handleOuterWheel = useCallback(
     (e: React.WheelEvent) => {
