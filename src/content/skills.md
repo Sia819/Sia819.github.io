@@ -1,17 +1,13 @@
 # 기술 스택
 
-## Frontend
+## 고급 기술
 
-React, Next.js, TypeScript, Tailwind CSS, HTML/CSS
+C#, Unity, PostgreSQL, Python, Windows, Git, Visual Studio, VS Code
 
-## Backend
+## 기초 기술
 
-Node.js, Express, Python, REST API
+C, C++, Java, HTML, Docker
 
-## DevOps & Tools
+## 학습 중
 
-Git, GitHub Actions, Docker, Linux
-
-## Language
-
-TypeScript, JavaScript, Python, C#, C++
+JavaScript, TypeScript, Next.js, React, Node.js
