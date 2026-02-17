@@ -8,6 +8,7 @@ import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import CodeBlock from './markdown/CodeBlock';
 import Callout from './markdown/Callout';
+import ImageModal from '@/components/common/ImageModal';
 
 interface MarkdownSectionProps {
   content: string;
@@ -139,17 +140,27 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
     },
 
     // --- Links ---
-    a: ({ href, children }) => (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-[15px] underline underline-offset-2 transition-opacity hover:opacity-75"
-        style={{ color: accentColor }}
-      >
-        {children}
-      </a>
-    ),
+    a: ({ href, children }) => {
+      // 이미지 확장자 링크 → 모달로 표시
+      if (href && /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(href)) {
+        return (
+          <ImageModal src={href} alt={typeof children === 'string' ? children : ''}>
+            {children}
+          </ImageModal>
+        );
+      }
+      return (
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[15px] underline underline-offset-2 transition-opacity hover:opacity-75"
+          style={{ color: accentColor }}
+        >
+          {children}
+        </a>
+      );
+    },
 
     // --- Divider ---
     hr: () => (
