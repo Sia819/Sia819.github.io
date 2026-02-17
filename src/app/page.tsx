@@ -4,6 +4,7 @@ import { resumeData } from '@/data/resume';
 import MarkdownSection from '@/components/sections/MarkdownSection';
 import { TAB_CONTENT, CONTENT_TAB_DEFS } from '@/content';
 import useTabWheel from '@/hooks/useTabWheel';
+import useHashSync from '@/hooks/useHashSync';
 
 /* ──────────────────────────────────────────────
  * 탭 정의
@@ -38,6 +39,7 @@ const CONTENT_TABS: readonly TabDef[] = CONTENT_TAB_DEFS.map((tab, i) => ({
 
 // 전체 탭 순서 (휠 네비게이션용)
 const ALL_TABS: readonly TabDef[] = [HOME_TAB, ...CONTENT_TABS, SETTINGS_TAB];
+const ALL_TAB_IDS = ALL_TABS.map((t) => t.id);
 
 /* ──────────────────────────────────────────────
  * 아이콘 컴포넌트
@@ -93,6 +95,8 @@ export default function Home() {
     handleOuterWheel,
     handleContentWheel,
   } = useTabWheel(ALL_TABS, HOME_TAB.id);
+
+  useHashSync(activeTab, setActiveTab, contentRef, ALL_TAB_IDS);
 
   const activeTabDef = ALL_TABS.find((t) => t.id === activeTab) ?? HOME_TAB;
   const showPaperLines = activeTab !== HOME_TAB.id;
