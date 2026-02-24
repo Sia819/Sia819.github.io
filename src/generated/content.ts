@@ -16,10 +16,10 @@ export type TabContent =
   | { type: 'component'; component: ComponentType<{ accentColor: string }> };
 
 export const CONTENT_TAB_DEFS: { id: string; label: string }[] = [
-  { id: 'resume', label: '기술 스택' },
+  { id: 'resume', label: '이력서' },
   { id: 'about', label: '자기소개' },
   { id: 'career', label: '경력' },
-  { id: 'portfolio1', label: '포트폴리오' },
+  { id: 'portfolio1', label: '포트폴리오 1' },
   { id: 'portfolio2', label: '포트폴리오 2' },
 ];
 
