@@ -182,9 +182,9 @@ export default function Home() {
             <div className="flex-1" />
             <TabButton tab={SETTINGS_TAB} activeTab={activeTab} onSelect={setActiveTab} variant="mobile" />
           </div>
-          {/* 모바일: 활성 탭 색상 가로 라인 */}
+          {/* 모바일: 활성 탭 색상 액센트 라인(가로) */}
           <div
-            className="h-[6px] transition-colors duration-200 md:hidden"
+            className="h-[6px] transition-colors duration-200 md:hidden" /* 액센트 라인 */
             style={{ backgroundColor: activeTabDef.color }}
           />
 
@@ -223,9 +223,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* === 활성 탭 색상 라인 === */}
+        {/* 데스크탑: 활성 탭 색상 액센트 라인(세로) */}
         <div
-          className="hidden w-[8px] shrink-0 transition-colors duration-200 md:block"
+          className="hidden w-[6px] shrink-0 transition-colors duration-200 md:block" /* 액센트 라인 */
           style={{ backgroundColor: activeTabDef.color }}
         />
 
