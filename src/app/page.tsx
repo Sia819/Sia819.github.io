@@ -24,7 +24,7 @@ export default function Home() {
   useHashSync(activeTab, setActiveTab, contentRef, ALL_TAB_IDS);
 
   const activeTabDef = ALL_TABS.find((t) => t.id === activeTab) ?? HOME_TAB;
-  const showPaperLines = activeTab !== HOME_TAB.id;
+  const showPaperLines = false;
 
   const renderContent = () => {
     const tab = TAB_CONTENT[activeTab];
