@@ -96,6 +96,9 @@ const getTabStyle = (tab: TabDef, activeTab: string) => {
 
 /* ──────────────────────────────────────────────
  * 탭 버튼 컴포넌트
+ *
+ * desktop(세로)과 mobile(가로)은 축만 다르고 로직은 동일.
+ * vertical 플래그로 축을 전환한다.
  * ────────────────────────────────────────────── */
 
 interface TabButtonProps {
@@ -105,64 +108,120 @@ interface TabButtonProps {
   variant: 'desktop' | 'mobile';
 }
 
-const DesktopTabButton = ({ tab, activeTab, onSelect }: Omit<TabButtonProps, 'variant'>) => {
+const ACTIVE_SIZE = '32px';
+const INACTIVE_SIZE = '26px';
+const ACTIVE_MAX = '150px';
+const INACTIVE_MAX = '100px';
+
+const TabButton = ({ tab, activeTab, onSelect, variant }: TabButtonProps) => {
+  const vertical = variant === 'desktop';
   const { isActive, buttonStyle, textClass, textColor } = getTabStyle(tab, activeTab);
+
+  const mainSize = isActive ? ACTIVE_SIZE : INACTIVE_SIZE;
+  const maxCrossSize = tab.icon ? undefined : isActive ? ACTIVE_MAX : INACTIVE_MAX;
+
   return (
     <button
       key={tab.id}
       onClick={() => onSelect(tab.id)}
-      className={`flex items-center justify-center rounded-r-lg py-2 transition-all duration-150 ${isActive ? 'w-[40px]' : 'w-[34px]'}`}
+      className={[
+        'flex items-center justify-center shrink-0 overflow-hidden transition-all duration-150',
+        vertical ? 'rounded-r-lg py-3' : 'rounded-t-lg px-3',
+        tab.icon ? '' : textClass,
+      ].join(' ')}
       style={{
         ...buttonStyle,
-        height: tab.icon ? '40px' : undefined,
-        maxHeight: tab.icon ? undefined : isActive ? '150px' : '100px',
+        color: textColor,
+        ...(vertical
+          ? { width: mainSize, maxHeight: maxCrossSize }
+          : { height: mainSize, maxWidth: maxCrossSize }),
       }}
     >
       {tab.icon ? (
         <TabIcon icon={tab.icon} color={textColor} />
       ) : (
-        <div
-          className={textClass}
-          style={{
+        <span
+          className={`block overflow-hidden whitespace-nowrap text-ellipsis ${vertical ? textClass : ''}`}
+          style={vertical ? {
             writingMode: 'vertical-rl',
             textOrientation: 'mixed',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
             maxHeight: '100%',
             color: textColor,
-          }}
+          } : { color: textColor }}
         >
           {tab.label}
-        </div>
+        </span>
       )}
     </button>
   );
 };
 
-const MobileTabButton = ({ tab, activeTab, onSelect }: Omit<TabButtonProps, 'variant'>) => {
-  const { isActive, buttonStyle, textClass, textColor } = getTabStyle(tab, activeTab);
-  return (
-    <button
-      key={tab.id}
-      onClick={() => onSelect(tab.id)}
-      className={`shrink-0 rounded-t-md px-3 transition-all duration-150 overflow-hidden text-ellipsis whitespace-nowrap ${tab.icon ? '' : textClass}`}
-      style={{
-        ...buttonStyle,
-        color: textColor,
-        height: isActive ? '32px' : '26px',
-        maxWidth: tab.icon ? undefined : isActive ? '150px' : '100px',
-      }}
-    >
-      {tab.icon ? <TabIcon icon={tab.icon} color={textColor} /> : tab.label}
-    </button>
-  );
-};
+/* ──────────────────────────────────────────────
+ * 탭 스트립 (탭 목록 + 액센트 라인)
+ *
+ * 모바일/데스크탑 공통 구조를 한 곳에서 관리.
+ * ────────────────────────────────────────────── */
 
-const TabButton = (props: TabButtonProps) => {
-  const { variant, ...rest } = props;
-  if (variant === 'desktop') return <DesktopTabButton {...rest} />;
-  return <MobileTabButton {...rest} />;
+const ACCENT_SIZE = '6px';
+const STRIP_SIZE = '44px';
+const STRIP_PADDING = 4; // Tailwind 단위 (16px)
+
+interface TabStripProps {
+  activeTab: string;
+  accentColor: string;
+  onSelect: (id: string) => void;
+  variant: 'desktop' | 'mobile';
+}
+
+export const TabStrip = ({ activeTab, accentColor, onSelect, variant }: TabStripProps) => {
+  const vertical = variant === 'desktop';
+
+  const tabList = (
+    <>
+      <TabButton tab={HOME_TAB} activeTab={activeTab} onSelect={onSelect} variant={variant} />
+      {CONTENT_TABS.map((tab) => (
+        <TabButton key={tab.id} tab={tab} activeTab={activeTab} onSelect={onSelect} variant={variant} />
+      ))}
+      <div className="flex-1" />
+      <TabButton tab={SETTINGS_TAB} activeTab={activeTab} onSelect={onSelect} variant={variant} />
+    </>
+  );
+
+  const accentLine = (
+    <div
+      className="shrink-0 transition-colors duration-200"
+      style={{
+        backgroundColor: accentColor,
+        ...(vertical ? { width: ACCENT_SIZE } : { height: ACCENT_SIZE }),
+      }}
+    />
+  );
+
+  if (vertical) {
+    return (
+      <>
+        {accentLine}
+        <nav
+          className={`relative flex flex-col items-start gap-1 py-${STRIP_PADDING}`}
+          style={{ width: STRIP_SIZE }}
+        >
+          {tabList}
+        </nav>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div
+        className={`flex items-end gap-1 overflow-x-auto px-${STRIP_PADDING}`}
+        style={{ height: STRIP_SIZE, backgroundColor: 'var(--paper)' }}
+      >
+        {tabList}
+      </div>
+      {accentLine}
+    </>
+  );
 };
 
 export default TabButton;

@@ -3,7 +3,7 @@
 import { resumeData } from '@/data/resume';
 import MarkdownSection from '@/components/sections/MarkdownSection';
 import { TAB_CONTENT } from '@/generated/content';
-import TabButton, { ALL_TABS, ALL_TAB_IDS, HOME_TAB, SETTINGS_TAB, CONTENT_TABS } from '@/components/tabs/TabButton';
+import { TabStrip, ALL_TABS, ALL_TAB_IDS, HOME_TAB } from '@/components/tabs/TabButton';
 import useTabWheel from '@/hooks/useTabWheel';
 import useHashSync from '@/hooks/useHashSync';
 
@@ -170,23 +170,10 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 모바일: 탭 가로 스크롤 */}
-          <div
-            className="flex h-[44px] items-end gap-1 overflow-x-auto px-4 md:hidden"
-            style={{ backgroundColor: 'var(--paper)' }}
-          >
-            <TabButton tab={HOME_TAB} activeTab={activeTab} onSelect={setActiveTab} variant="mobile" />
-            {CONTENT_TABS.map((tab) => (
-              <TabButton key={tab.id} tab={tab} activeTab={activeTab} onSelect={setActiveTab} variant="mobile" />
-            ))}
-            <div className="flex-1" />
-            <TabButton tab={SETTINGS_TAB} activeTab={activeTab} onSelect={setActiveTab} variant="mobile" />
+          {/* 모바일: 탭 스트립 */}
+          <div className="md:hidden">
+            <TabStrip activeTab={activeTab} accentColor={activeTabDef.color} onSelect={setActiveTab} variant="mobile" />
           </div>
-          {/* 모바일: 활성 탭 색상 액센트 라인(가로) */}
-          <div
-            className="h-[6px] transition-colors duration-200 md:hidden" /* 액센트 라인 */
-            style={{ backgroundColor: activeTabDef.color }}
-          />
 
           {/* 종이 콘텐츠 */}
           <div
@@ -223,33 +210,10 @@ export default function Home() {
           </div>
         </div>
 
-        {/* 데스크탑: 활성 탭 색상 액센트 라인(세로) */}
-        <div
-          className="hidden w-[6px] shrink-0 transition-colors duration-200 md:block" /* 액센트 라인 */
-          style={{ backgroundColor: activeTabDef.color }}
-        />
-
-        {/* === 오른쪽 탭 스트립 (데스크탑) === */}
-        <nav
-          className="relative hidden w-[40px] shrink-0 md:flex md:flex-col md:items-start md:py-6"
-          style={{ marginRight: '10px' }}
-        >
-          {/* 상단: 홈 + 콘텐츠 탭 */}
-          <div className="flex flex-col gap-1">
-            <TabButton tab={HOME_TAB} activeTab={activeTab} onSelect={setActiveTab} variant="desktop" />
-            {CONTENT_TABS.map((tab) => (
-              <TabButton key={tab.id} tab={tab} activeTab={activeTab} onSelect={setActiveTab} variant="desktop" />
-            ))}
-          </div>
-
-          {/* 스페이서 */}
-          <div className="flex-1" />
-
-          {/* 하단: 설정 탭 (고정) */}
-          <div className="flex flex-col gap-1">
-            <TabButton tab={SETTINGS_TAB} activeTab={activeTab} onSelect={setActiveTab} variant="desktop" />
-          </div>
-        </nav>
+        {/* 데스크탑: 탭 스트립 */}
+        <div className="hidden md:flex">
+          <TabStrip activeTab={activeTab} accentColor={activeTabDef.color} onSelect={setActiveTab} variant="desktop" />
+        </div>
       </div>
     </div>
   );
