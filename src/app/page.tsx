@@ -2,7 +2,7 @@
 
 import { resumeData } from '@/data/resume';
 import MarkdownSection from '@/components/sections/MarkdownSection';
-import { TAB_CONTENT, CONTENT_TAB_DEFS } from '@/content';
+import { TAB_CONTENT, CONTENT_TAB_DEFS } from '@/generated/content';
 import useTabWheel from '@/hooks/useTabWheel';
 import useHashSync from '@/hooks/useHashSync';
 

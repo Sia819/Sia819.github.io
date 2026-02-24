@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "generate": "node scripts/generate-content-index.mjs",
+    "predev": "npm run generate",
+    "prebuild": "npm run generate",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
