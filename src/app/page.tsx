@@ -2,85 +2,10 @@
 
 import { resumeData } from '@/data/resume';
 import MarkdownSection from '@/components/sections/MarkdownSection';
-import { TAB_CONTENT, CONTENT_TAB_DEFS } from '@/generated/content';
+import { TAB_CONTENT } from '@/generated/content';
+import TabButton, { ALL_TABS, ALL_TAB_IDS, HOME_TAB, SETTINGS_TAB, CONTENT_TABS } from '@/components/tabs/TabButton';
 import useTabWheel from '@/hooks/useTabWheel';
 import useHashSync from '@/hooks/useHashSync';
-
-/* ──────────────────────────────────────────────
- * 탭 정의
- * ────────────────────────────────────────────── */
-
-interface TabDef {
-  readonly id: string;
-  readonly label: string;
-  readonly icon: 'home' | 'settings' | null;
-  readonly color: string;
-}
-
-// 정적 페이지 탭 (고정 위치)
-const HOME_TAB: TabDef = { id: 'home', label: '', icon: 'home', color: 'var(--tab-home)' };
-const SETTINGS_TAB: TabDef = { id: 'settings', label: '', icon: 'settings', color: 'var(--tab-settings)' };
-
-// 콘텐츠 탭 색상 팔레트 (CSS 변수와 동기화, 순환 적용)
-const TAB_PALETTE = [
-  'var(--tab-palette-1)',
-  'var(--tab-palette-2)',
-  'var(--tab-palette-3)',
-  'var(--tab-palette-4)',
-  'var(--tab-palette-5)',
-];
-
-// 콘텐츠 탭 (content/index.ts에서 동적으로 생성)
-const CONTENT_TABS: readonly TabDef[] = CONTENT_TAB_DEFS.map((tab, i) => ({
-  ...tab,
-  icon: null,
-  color: TAB_PALETTE[i % TAB_PALETTE.length],
-}));
-
-// 전체 탭 순서 (휠 네비게이션용)
-const ALL_TABS: readonly TabDef[] = [HOME_TAB, ...CONTENT_TABS, SETTINGS_TAB];
-const ALL_TAB_IDS = ALL_TABS.map((t) => t.id);
-
-/* ──────────────────────────────────────────────
- * 아이콘 컴포넌트
- * ────────────────────────────────────────────── */
-
-const HomeIcon = ({ color }: { color: string }) => (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke={color}
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-    <polyline points="9 22 9 12 15 12 15 22" />
-  </svg>
-);
-
-const GearIcon = ({ color }: { color: string }) => (
-  <svg
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke={color}
-    strokeWidth="2.5"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <circle cx="12" cy="12" r="3" />
-    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-  </svg>
-);
-
-const TabIcon = ({ icon, color }: { icon: 'home' | 'settings'; color: string }) => {
-  if (icon === 'home') return <HomeIcon color={color} />;
-  return <GearIcon color={color} />;
-};
 
 /* ──────────────────────────────────────────────
  * 메인 컴포넌트
@@ -109,64 +34,6 @@ export default function Home() {
     }
     const Component = tab.component;
     return <Component accentColor={activeTabDef.color} />;
-  };
-
-  const getTabStyle = (tab: TabDef) => {
-    const isActive = activeTab === tab.id;
-    return {
-      isActive,
-      buttonStyle: {
-        backgroundColor: tab.color,
-        opacity: isActive ? 1 : 0.7,
-        boxShadow: isActive ? 'none' : '1px 1px 3px rgba(0,0,0,0.1)',
-      } as React.CSSProperties,
-      textClass: `text-sm transition-all duration-150 ${isActive ? 'font-bold' : 'font-normal'}`,
-      textColor: isActive ? '#101010' : '#faf5eb',
-    };
-  };
-
-  /* 탭 버튼 렌더 (데스크탑 세로) */
-  const renderDesktopTab = (tab: TabDef) => {
-    const { isActive, buttonStyle, textClass, textColor } = getTabStyle(tab);
-    return (
-      <button
-        key={tab.id}
-        onClick={() => setActiveTab(tab.id)}
-        className={`flex items-center justify-center rounded-r-lg transition-all duration-150 ${isActive ? 'w-[40px]' : 'w-[30px]'}`}
-        style={{ ...buttonStyle, height: tab.icon ? '40px' : '80px' }}
-      >
-        {tab.icon ? (
-          <TabIcon icon={tab.icon} color={textColor} />
-        ) : (
-          <span
-            className={textClass}
-            style={{
-              writingMode: 'vertical-rl',
-              textOrientation: 'mixed',
-              whiteSpace: 'nowrap',
-              color: textColor,
-            }}
-          >
-            {tab.label}
-          </span>
-        )}
-      </button>
-    );
-  };
-
-  /* 탭 버튼 렌더 (모바일 가로) */
-  const renderMobileTab = (tab: TabDef) => {
-    const { isActive, buttonStyle, textClass, textColor } = getTabStyle(tab);
-    return (
-      <button
-        key={tab.id}
-        onClick={() => setActiveTab(tab.id)}
-        className={`shrink-0 rounded-t-md px-3 transition-all duration-150 ${tab.icon ? '' : textClass}`}
-        style={{ ...buttonStyle, color: textColor, height: isActive ? '36px' : '26px' }}
-      >
-        {tab.icon ? <TabIcon icon={tab.icon} color={textColor} /> : tab.label}
-      </button>
-    );
   };
 
   const { profile } = resumeData;
@@ -308,13 +175,12 @@ export default function Home() {
             className="flex h-[44px] items-end gap-1 overflow-x-auto px-4 md:hidden"
             style={{ backgroundColor: 'var(--paper)' }}
           >
-            {/* 홈 (정적) */}
-            {renderMobileTab(HOME_TAB)}
-            {/* 콘텐츠 탭 (동적) */}
-            {CONTENT_TABS.map(renderMobileTab)}
-            {/* 설정 (정적, 오른쪽 끝으로 밀기) */}
+            <TabButton tab={HOME_TAB} activeTab={activeTab} onSelect={setActiveTab} variant="mobile" />
+            {CONTENT_TABS.map((tab) => (
+              <TabButton key={tab.id} tab={tab} activeTab={activeTab} onSelect={setActiveTab} variant="mobile" />
+            ))}
             <div className="flex-1" />
-            {renderMobileTab(SETTINGS_TAB)}
+            <TabButton tab={SETTINGS_TAB} activeTab={activeTab} onSelect={setActiveTab} variant="mobile" />
           </div>
           {/* 모바일: 활성 탭 색상 가로 라인 */}
           <div
@@ -370,8 +236,10 @@ export default function Home() {
         >
           {/* 상단: 홈 + 콘텐츠 탭 */}
           <div className="flex flex-col gap-1">
-            {renderDesktopTab(HOME_TAB)}
-            {CONTENT_TABS.map(renderDesktopTab)}
+            <TabButton tab={HOME_TAB} activeTab={activeTab} onSelect={setActiveTab} variant="desktop" />
+            {CONTENT_TABS.map((tab) => (
+              <TabButton key={tab.id} tab={tab} activeTab={activeTab} onSelect={setActiveTab} variant="desktop" />
+            ))}
           </div>
 
           {/* 스페이서 */}
@@ -379,7 +247,7 @@ export default function Home() {
 
           {/* 하단: 설정 탭 (고정) */}
           <div className="flex flex-col gap-1">
-            {renderDesktopTab(SETTINGS_TAB)}
+            <TabButton tab={SETTINGS_TAB} activeTab={activeTab} onSelect={setActiveTab} variant="desktop" />
           </div>
         </nav>
       </div>
