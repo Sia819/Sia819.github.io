@@ -111,7 +111,7 @@ const DesktopTabButton = ({ tab, activeTab, onSelect }: Omit<TabButtonProps, 'va
     <button
       key={tab.id}
       onClick={() => onSelect(tab.id)}
-      className={`relative flex items-center justify-center rounded-r-lg px-1 py-2 overflow-hidden transition-all duration-150 ${isActive ? 'w-[40px]' : 'w-[34px]'}`}
+      className={`flex items-center justify-center rounded-r-lg py-2 transition-all duration-150 ${isActive ? 'w-[40px]' : 'w-[34px]'}`}
       style={{
         ...buttonStyle,
         height: tab.icon ? '40px' : undefined,
@@ -121,36 +121,20 @@ const DesktopTabButton = ({ tab, activeTab, onSelect }: Omit<TabButtonProps, 'va
       {tab.icon ? (
         <TabIcon icon={tab.icon} color={textColor} />
       ) : (
-        <>
-          {/* 숨겨진 spacer: vertical-rl로 버튼 높이를 텍스트 길이에 맞춤 */}
-          <div
-            aria-hidden="true"
-            className={textClass}
-            style={{
-              writingMode: 'vertical-rl',
-              whiteSpace: 'nowrap',
-              visibility: 'hidden',
-              maxHeight: '100%',
-            }}
-          >
-            {tab.label}
-          </div>
-          {/* 실제 텍스트: 가로 텍스트를 90도 회전 */}
-          <div
-            className={textClass}
-            style={{
-              position: 'absolute',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              maxWidth: `${(isActive ? 150 : 100) - 16}px`,
-              color: textColor,
-              transform: 'rotate(90deg)',
-            }}
-          >
-            {tab.label}
-          </div>
-        </>
+        <div
+          className={textClass}
+          style={{
+            writingMode: 'vertical-rl',
+            textOrientation: 'mixed',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            maxHeight: '100%',
+            color: textColor,
+          }}
+        >
+          {tab.label}
+        </div>
       )}
     </button>
   );
