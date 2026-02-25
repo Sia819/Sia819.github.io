@@ -102,6 +102,14 @@ details > *:not(summary) {
   margin-bottom: 0;
 }
 
+/* 탭 스트립 스크롤바 숨김 */
+.tab-strip-scroll {
+  scrollbar-width: none;
+}
+.tab-strip-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 /* 힌트 페이드인 */
 @keyframes fade-in {
   from { opacity: 0; transform: translateY(6px); }
