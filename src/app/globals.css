@@ -39,7 +39,7 @@
 body {
   background: var(--desk);
   color: var(--text-primary);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: 'Pretendard Variable', Pretendard, var(--font-inter), Arial, Helvetica, sans-serif;
 }
 
 /* 노트북 페이퍼 라인 */

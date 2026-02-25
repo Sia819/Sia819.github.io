@@ -116,7 +116,8 @@ interface TabButtonProps {
 const ACTIVE_SIZE = '32px';    // 활성 탭의 두께 (데스크탑: width, 모바일: height)
 const INACTIVE_SIZE = '26px';  // 비활성 탭의 두께
 const ACTIVE_MAX = '150px';    // 활성 탭의 최대 길이 (데스크탑: maxHeight, 모바일: maxWidth)
-const INACTIVE_MAX = '120px';  // 비활성 탭의 최대 길이
+const INACTIVE_MAX = '130px';  // 비활성 탭의 최대 길이
+const VERTICAL_WORD_SPACING = '-0.8em'; // 세로 쓰기 시 공백 간격 축소 (upright 모드에서 공백이 1em 전체를 차지하므로)
 
 const TabButton = ({ tab, activeTab, onSelect, variant }: TabButtonProps) => {
   const vertical = variant === 'desktop';
@@ -135,11 +136,22 @@ const TabButton = ({ tab, activeTab, onSelect, variant }: TabButtonProps) => {
     }
   }, [isActive]);
 
+  // 텍스트 잘림 감지 (ResizeObserver로 transition 완료 후 재측정)
   useEffect(() => {
     const el = textRef.current;
     if (!el || tab.icon) return;
-    setIsTruncated(el.scrollWidth > el.clientWidth);
-  }, [tab.icon, isActive, tab.label]);
+    const check = () => {
+      setIsTruncated(
+        vertical
+          ? el.scrollHeight > el.clientHeight + 1
+          : el.scrollWidth > el.clientWidth + 1,
+      );
+    };
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [tab.icon, tab.label, vertical]);
 
   return (
     <button
@@ -148,7 +160,7 @@ const TabButton = ({ tab, activeTab, onSelect, variant }: TabButtonProps) => {
       onClick={() => onSelect(tab.id)}
       title={!tab.icon && isTruncated ? tab.label : undefined}
       className={[
-        'flex items-center justify-center shrink-0 overflow-hidden transition-all duration-150',
+        'relative flex items-center justify-center shrink-0 overflow-hidden transition-all duration-150',
         vertical ? 'rounded-r-lg py-3' : 'rounded-t-lg px-3',
         tab.icon ? '' : textClass,
       ].join(' ')}
@@ -164,18 +176,36 @@ const TabButton = ({ tab, activeTab, onSelect, variant }: TabButtonProps) => {
       {tab.icon ? (
         <TabIcon icon={tab.icon} color={textColor} />
       ) : (
-        <span
-          ref={textRef}
-          className={`block overflow-hidden whitespace-nowrap text-ellipsis ${vertical ? textClass : ''}`}
-          style={vertical ? {
-            writingMode: 'vertical-rl',
-            textOrientation: 'mixed',
-            maxHeight: '100%',
-            color: textColor,
-          } : { color: textColor }}
-        >
-          {tab.label}
-        </span>
+        <>
+          <span
+            ref={textRef}
+            className={`block overflow-hidden whitespace-nowrap ${vertical ? textClass : 'text-ellipsis'}`}
+            style={vertical ? {
+              writingMode: 'vertical-rl',
+              textOrientation: 'upright',
+              wordSpacing: VERTICAL_WORD_SPACING,
+              maxHeight: '100%',
+              color: textColor,
+            } : { color: textColor }}
+          >
+            {tab.label}
+          </span>
+          {vertical && isTruncated && (
+            <span
+              className="pointer-events-none absolute bottom-2 left-0 right-0 flex flex-col items-center"
+              style={{
+                fontSize: '8px',
+                lineHeight: '5px',
+                color: textColor,
+                background: `linear-gradient(to top, ${buttonStyle.backgroundColor} 50%, transparent)`,
+                paddingTop: '4px',
+                paddingBottom: '2px',
+              }}
+            >
+              <span>.</span><span>.</span><span>.</span>
+            </span>
+          )}
+        </>
       )}
     </button>
   );
