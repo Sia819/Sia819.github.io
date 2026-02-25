@@ -222,7 +222,9 @@ const TabScrollContainer = ({ vertical, size, padding, children }: TabScrollCont
 
   const containerStyle = vertical
     ? { width: size }
-    : { height: size, backgroundColor: 'var(--paper)' };
+    : { height: size, backgroundColor: 'var(--paper)' } as React.CSSProperties;
+
+  const scrollStyle: React.CSSProperties = { scrollbarWidth: 'none' };
 
   const startFade = vertical
     ? { top: 0, left: 0, right: 0, height: FADE_SIZE, background: 'linear-gradient(to bottom, var(--paper), transparent)' }
@@ -234,7 +236,7 @@ const TabScrollContainer = ({ vertical, size, padding, children }: TabScrollCont
 
   return (
     <div className="relative" style={containerStyle}>
-      <div ref={scrollRef} className={scrollClass}>
+      <div ref={scrollRef} className={scrollClass} style={scrollStyle}>
         {children}
       </div>
       {canScrollStart && (

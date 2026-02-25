@@ -107,7 +107,9 @@ details > *:not(summary) {
   scrollbar-width: none;
 }
 .tab-strip-scroll::-webkit-scrollbar {
-  display: none;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* 힌트 페이드인 */
