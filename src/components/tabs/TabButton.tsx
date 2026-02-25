@@ -125,8 +125,9 @@ const TabButton = ({ tab, activeTab, onSelect, variant }: TabButtonProps) => {
       key={tab.id}
       onClick={() => onSelect(tab.id)}
       className={[
-        'flex items-center justify-center shrink-0 overflow-hidden transition-all duration-150',
-        vertical ? 'rounded-r-lg py-3' : 'rounded-t-lg px-3',
+        'flex items-center justify-center overflow-hidden transition-all duration-150',
+        vertical ? 'shrink-0 rounded-r-lg py-3' : 'rounded-t-lg px-3',
+        vertical ? '' : (tab.icon ? 'shrink-0' : 'min-w-0'),
         tab.icon ? '' : textClass,
       ].join(' ')}
       style={{

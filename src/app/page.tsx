@@ -149,7 +149,7 @@ export default function Home() {
         </div>
 
         {/* === 메인 콘텐츠 영역 === */}
-        <div className="relative flex flex-1 flex-col">
+        <div className="relative flex min-w-0 flex-1 flex-col">
           {/* 모바일: 프로필 헤더 */}
           <div
             className="flex items-center gap-4 px-5 py-4 md:hidden"
@@ -171,7 +171,7 @@ export default function Home() {
           </div>
 
           {/* 모바일: 탭 스트립 */}
-          <div className="md:hidden">
+          <div className="min-w-0 md:hidden">
             <TabStrip activeTab={activeTab} accentColor={activeTabDef.color} onSelect={setActiveTab} variant="mobile" />
           </div>
 
