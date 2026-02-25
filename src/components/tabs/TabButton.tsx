@@ -120,11 +120,19 @@ const INACTIVE_MAX = '120px';  // 비활성 탭의 최대 길이
 const TabButton = ({ tab, activeTab, onSelect, variant }: TabButtonProps) => {
   const vertical = variant === 'desktop';
   const { isActive, buttonStyle, textClass, textColor } = getTabStyle(tab, activeTab);
+  const btnRef = useRef<HTMLButtonElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
   const [isTruncated, setIsTruncated] = useState(false);
 
   const mainSize = isActive ? ACTIVE_SIZE : INACTIVE_SIZE;
   const maxCrossSize = tab.icon ? undefined : isActive ? ACTIVE_MAX : INACTIVE_MAX;
+
+  // 활성 탭이 스크롤 영역 밖이면 자동으로 보이게 스크롤
+  useEffect(() => {
+    if (isActive && btnRef.current) {
+      btnRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    }
+  }, [isActive]);
 
   useEffect(() => {
     const el = textRef.current;
@@ -134,6 +142,7 @@ const TabButton = ({ tab, activeTab, onSelect, variant }: TabButtonProps) => {
 
   return (
     <button
+      ref={btnRef}
       key={tab.id}
       onClick={() => onSelect(tab.id)}
       title={!tab.icon && isTruncated ? tab.label : undefined}
@@ -145,6 +154,7 @@ const TabButton = ({ tab, activeTab, onSelect, variant }: TabButtonProps) => {
       style={{
         ...buttonStyle,
         color: textColor,
+        scrollMargin: FADE_SIZE,
         ...(vertical
           ? { width: mainSize, maxHeight: maxCrossSize }
           : { height: mainSize, maxWidth: maxCrossSize }),
