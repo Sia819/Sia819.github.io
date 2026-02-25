@@ -202,8 +202,8 @@ export default function Home() {
                   }}
                 >
                   {hint.direction === 'down'
-                    ? `스크롤하여 이동 → ${hint.tab.label || (hint.tab.icon === 'settings' ? '설정' : '홈')}`
-                    : `${hint.tab.label || (hint.tab.icon === 'home' ? '홈' : '설정')} ← 스크롤하여 이동`}
+                    ? `스크롤하여 이동 → ${hint.tab.label || (hint.tab.icon === 'about' ? 'About' : '홈')}`
+                    : `${hint.tab.label || (hint.tab.icon === 'home' ? '홈' : 'About')} ← 스크롤하여 이동`}
                 </span>
               </div>
             )}

@@ -4,7 +4,7 @@
  * 파일명 규칙: <번호>. <id>.<md|tsx>
  * - md  → { type: 'markdown', content: string }
  * - tsx → { type: 'component', component: ComponentType }
- * - home, settings → 특수 탭 (CONTENT_TAB_DEFS에서 제외)
+ * - home, about → 특수 탭 (CONTENT_TAB_DEFS에서 제외)
  * - md 파일의 첫 번째 `# heading`이 탭 라벨로 사용됨
  */
 
@@ -17,7 +17,7 @@ const CONTENT_DIR = join(__dirname, '..', 'src', 'content');
 const GENERATED_DIR = join(__dirname, '..', 'src', 'generated');
 const OUTPUT_FILE = join(GENERATED_DIR, 'content.ts');
 
-const SPECIAL_TABS = new Set(['home', 'settings']);
+const SPECIAL_TABS = new Set(['home', 'about']);
 const FILE_PATTERN = /^(\d+)\.\s+(.+)\.(md|tsx)$/;
 
 // content 디렉토리 스캔 및 파싱

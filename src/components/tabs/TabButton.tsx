@@ -8,13 +8,13 @@ import { CONTENT_TAB_DEFS } from '@/generated/content';
 export interface TabDef {
   readonly id: string;
   readonly label: string;
-  readonly icon: 'home' | 'settings' | null;
+  readonly icon: 'home' | 'about' | null;
   readonly color: string;
 }
 
 // 정적 페이지 탭 (고정 위치)
 export const HOME_TAB: TabDef = { id: 'home', label: '', icon: 'home', color: 'var(--tab-home)' };
-export const SETTINGS_TAB: TabDef = { id: 'settings', label: '', icon: 'settings', color: 'var(--tab-settings)' };
+export const ABOUT_TAB: TabDef = { id: 'about', label: '', icon: 'about', color: 'var(--tab-about)' };
 
 // 콘텐츠 탭 색상 팔레트 (CSS 변수와 동기화, 순환 적용)
 const TAB_PALETTE = [
@@ -33,7 +33,7 @@ export const CONTENT_TABS: readonly TabDef[] = CONTENT_TAB_DEFS.map((tab, i) => 
 }));
 
 // 전체 탭 순서 (휠 네비게이션용)
-export const ALL_TABS: readonly TabDef[] = [HOME_TAB, ...CONTENT_TABS, SETTINGS_TAB];
+export const ALL_TABS: readonly TabDef[] = [HOME_TAB, ...CONTENT_TABS, ABOUT_TAB];
 export const ALL_TAB_IDS = ALL_TABS.map((t) => t.id);
 
 /* ──────────────────────────────────────────────
@@ -56,7 +56,7 @@ const HomeIcon = ({ color }: { color: string }) => (
   </svg>
 );
 
-const GearIcon = ({ color }: { color: string }) => (
+const InfoIcon = ({ color }: { color: string }) => (
   <svg
     width="16"
     height="16"
@@ -67,14 +67,15 @@ const GearIcon = ({ color }: { color: string }) => (
     strokeLinecap="round"
     strokeLinejoin="round"
   >
-    <circle cx="12" cy="12" r="3" />
-    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    <circle cx="12" cy="12" r="10" />
+    <line x1="12" y1="16" x2="12" y2="12" />
+    <line x1="12" y1="8" x2="12.01" y2="8" />
   </svg>
 );
 
-const TabIcon = ({ icon, color }: { icon: 'home' | 'settings'; color: string }) => {
+const TabIcon = ({ icon, color }: { icon: 'home' | 'about'; color: string }) => {
   if (icon === 'home') return <HomeIcon color={color} />;
-  return <GearIcon color={color} />;
+  return <InfoIcon color={color} />;
 };
 
 /* ──────────────────────────────────────────────
@@ -286,7 +287,7 @@ export const TabStrip = ({ activeTab, accentColor, onSelect, variant }: TabStrip
         <TabButton key={tab.id} tab={tab} activeTab={activeTab} onSelect={onSelect} variant={variant} />
       ))}
       <div className="flex-1" />
-      <TabButton tab={SETTINGS_TAB} activeTab={activeTab} onSelect={onSelect} variant={variant} />
+      <TabButton tab={ABOUT_TAB} activeTab={activeTab} onSelect={onSelect} variant={variant} />
     </>
   );
 

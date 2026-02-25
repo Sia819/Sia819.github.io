@@ -5,11 +5,11 @@ import type { ComponentType } from 'react';
 
 import HomeContent from '../content/1. home';
 import resumeMd from '../content/2. resume.md';
-import aboutMd from '../content/3. about.md';
+import introductionMd from '../content/3. introduction.md';
 import careerMd from '../content/4. career.md';
 import portfolio1Md from '../content/5. portfolio1.md';
 import portfolio2Md from '../content/6. portfolio2.md';
-import settingsMd from '../content/99. settings.md';
+import aboutMd from '../content/99. about.md';
 
 export type TabContent =
   | { type: 'markdown'; content: string }
@@ -17,7 +17,7 @@ export type TabContent =
 
 export const CONTENT_TAB_DEFS: { id: string; label: string }[] = [
   { id: 'resume', label: '이력서' },
-  { id: 'about', label: '자기소개' },
+  { id: 'introduction', label: '자기소개' },
   { id: 'career', label: '경력' },
   { id: 'portfolio1', label: '포트폴리오 1' },
   { id: 'portfolio2', label: '포트폴리오 2' },
@@ -26,9 +26,9 @@ export const CONTENT_TAB_DEFS: { id: string; label: string }[] = [
 export const TAB_CONTENT: Record<string, TabContent> = {
   home: { type: 'component', component: HomeContent },
   resume: { type: 'markdown', content: resumeMd },
-  about: { type: 'markdown', content: aboutMd },
+  introduction: { type: 'markdown', content: introductionMd },
   career: { type: 'markdown', content: careerMd },
   portfolio1: { type: 'markdown', content: portfolio1Md },
   portfolio2: { type: 'markdown', content: portfolio2Md },
-  settings: { type: 'markdown', content: settingsMd },
+  about: { type: 'markdown', content: aboutMd },
 };

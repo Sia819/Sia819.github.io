@@ -3,7 +3,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 interface TabDef {
   readonly id: string;
   readonly label: string;
-  readonly icon: 'home' | 'settings' | null;
+  readonly icon: 'home' | 'about' | null;
   readonly color: string;
 }
 
