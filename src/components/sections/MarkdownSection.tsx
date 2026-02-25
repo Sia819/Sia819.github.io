@@ -4,6 +4,7 @@ import { Children, isValidElement, type ReactNode } from 'react';
 import Markdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
 import rehypeRaw from 'rehype-raw';
 import rehypeSlug from 'rehype-slug';
 import CodeBlock from './markdown/CodeBlock';
@@ -310,7 +311,7 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
   return (
     <div>
       <Markdown
-        remarkPlugins={[remarkGfm]}
+        remarkPlugins={[remarkGfm, remarkBreaks]}
         rehypePlugins={[rehypeRaw, rehypeSlug]}
         components={components}
       >
