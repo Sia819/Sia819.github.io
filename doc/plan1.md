@@ -1,160 +1,60 @@
-# Plan 1 - Sia819.github.io 사이트 구축 계획
+# 다크모드 적용 플랜 (next-themes 기반)
 
-## 현재 완료된 것
+본 문서는 `next-themes` 패키지를 활용하여 프로젝트에 다크모드를 도입하기 위한 단계별 작업 계획입니다. 기존의 CSS 변수(`var(...)`) 기반 스타일링 구조를 유지하면서, 하드코딩된 색상들을 CSS 변수로 추출하고 다크 테마 팔레트를 적용합니다.
 
-### 인프라 (완료)
-- [x] Next.js 16.1.6 + TypeScript + React 19 프로젝트 초기화
-- [x] Tailwind CSS 4 설정
-- [x] ESLint + Prettier 설정
-- [x] GitHub Actions CI/CD (`deploy.yml`) - main push 시 자동 빌드/배포
-- [x] `.gitignore` 설정 (out/, node_modules/, .next/ 등)
-- [x] `CLAUDE.md` 프로젝트 규칙 정립
-- [x] `README.md` 프로젝트 설명 (빌드/배포 방식 포함)
-- [x] Hello World 페이지 (`src/app/page.tsx`)
+## Step 1. `next-themes` 설치 및 Provider 설정
 
-### 현재 파일 구조
-```
-Sia819.github.io/
-├── .github/workflows/deploy.yml   # CI/CD
-├── src/
-│   └── app/
-│       ├── layout.tsx              # 루트 레이아웃 (lang="ko", Geist 폰트)
-│       ├── page.tsx                # 메인 페이지 (현재 Coming Soon)
-│       ├── globals.css             # Tailwind + 다크모드 기본 변수
-│       └── favicon.ico
-├── CLAUDE.md
-├── README.md
-├── next.config.ts                  # output: 'export' (정적 빌드)
-├── package.json
-├── tsconfig.json
-└── ...
-```
+1. **패키지 설치:** `npm install next-themes`
+2. **Provider 분리 및 적용 (`src/components/providers/ThemeProvider.tsx` & `src/app/layout.tsx`):**
+   - **중요:** Next.js App Router 환경에서는 `layout.tsx`가 서버 컴포넌트이므로, `next-themes`의 `ThemeProvider`는 `'use client'` 지시어가 포함된 별도의 클라이언트 컴포넌트(`ThemeProvider.tsx`)로 분리해서 감싸주어야 합니다.
+   - `<body>` 태그 내부의 `children`을 만들어둔 `<ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>`으로 감쌉니다.
+   - <html> 태그에 `suppressHydrationWarning` 속성이 이미 있는지 확인하고 유지합니다.
+   - `<meta name="darkreader-lock" />`: 기존에 설정된 Dark Reader 확장 프로그램 차단 메타 태그는 프로젝트의 네이티브 다크 모드가 우선적으로 동작하도록 유지합니다.
 
----
+## Step 2. 전역 스타일 확장 및 다크 테마 변수 정의 (`src/app/globals.css`)
 
-## 만들 것
+기존 `:root` 선택자에 컴포넌트들에서 하드코딩으로 사용 중인 색상들을 CSS 변수로 추가하고, `[data-theme="dark"]` 선택자를 통해 다크 테마용 색상 팔레트를 정의합니다. 테마 전환 시 부드러운 효과를 위해 `transition`도 추가합니다.
 
-### 1. 메인 페이지 - 이력서/포트폴리오 (최우선)
+**추가할 CSS 변수 (라이트/다크 양쪽 정의):**
+- **코드 블록 (`--code-*`):** `--code-bg`, `--code-text`, `--code-comment`, `--code-string`, `--code-punctuation`, `--code-number`, `--code-keyword`, `--code-function`, `--code-class`, `--code-builtin`
+- **탭 텍스트 (`--tab-text-*`):** `--tab-text-active`, `--tab-text-inactive`
+- **스크롤 힌트 (`--hint-*`):** `--hint-bg`, `--hint-text`, `--hint-border`
+- **콜아웃 (`--callout-*`):** `--callout-note-bg`, `--callout-note-border`, `--callout-tip-bg`, `--callout-tip-border`, `--callout-warning-bg`, `--callout-warning-border`, `--callout-important-bg`, `--callout-important-border`
+- **기타 마크다운 (`--hr-color`, `--blockquote-bg`)**
+- **그림자 (`--shadow-notebook`, `--shadow-binder-pin`, `--shadow-tab`)**
 
-첫 화면이 이력서. 스크롤하면 A4 블록 단위로 섹션이 내려가는 구조.
+**다크 테마 기본 변수 (`--paper`, `--kraft`, `--text-primary` 등) 재정의:**
+- 기존 종이 질감을 유지하면서 따뜻한 어두운 톤(Dark Brown / Warm Gray 계열)으로 재정의합니다.
 
-#### 섹션 구성 (위에서 아래로 스크롤)
-1. **히어로/프로필** - 이름, 직함, 한 줄 소개, 프로필 사진
-2. **소개** - 간단한 자기소개 (2~3문단)
-3. **기술 스택** - 사용 가능한 기술 목록 (카테고리별 정리)
-4. **경력** - 회사명, 기간, 역할, 주요 업무 (타임라인 형태)
-5. **프로젝트** - 주요 프로젝트 카드 (제목, 설명, 기술, 링크)
-6. **학력/자격증** - 학력, 자격증 목록
-7. **연락처/Footer** - 이메일, GitHub, LinkedIn 등 링크
+## Step 3. 하드코딩 색상 CSS 변수로 마이그레이션
 
-#### 디자인 방향
-- A4 용지 느낌의 블록이 수직으로 쌓이는 형태
-- 깔끔하고 전문적인 톤 (개발자 이력서 느낌)
-- 다크모드/라이트모드 지원
-- 반응형 (모바일에서도 잘 보이게)
+각 컴포넌트에 하드코딩되어 있는 색상 값(HEX, RGBA 등)과 그림자를 Step 2에서 정의한 CSS 변수로 교체합니다.
 
-#### 데이터 관리
-- 이력서 데이터는 별도 파일(JSON 또는 TS 상수)로 분리
-- 내용을 수정할 때 데이터 파일만 고치면 되는 구조
+- **`src/components/sections/markdown/CodeBlock.tsx`:** Prism 테마(`kraftTheme`)의 색상들을 `var(--code-*)`로 변경.
+  *(**Fallback 전략**: `prism-react-renderer` 내부 로직에 의해 CSS 변수 파싱에 문제가 생길 경우, `useTheme` 훅으로 현재 테마를 읽어와 `lightTheme`과 `darkTheme` 객체를 분리하여 넘겨주는 방식으로 전환합니다.)*
+- **`src/components/tabs/TabButton.tsx`:** 
+  - 활성/비활성 탭 텍스트 색상을 `var(--tab-text-*)`로 변경
+  - `boxShadow: isActive ? 'none' : '1px 1px 3px rgba(0,0,0,0.1)'` 부분의 하드코딩된 그림자 값을 `var(--shadow-tab)`으로 변경하여 다크모드에서는 어울리게 투명도를 조절.
+- **`src/components/sections/markdown/Callout.tsx`:** `CALLOUT_CONFIG`의 배경, 테두리, 아이콘 색상을 `var(--callout-*)`로 변경
+- **`src/components/sections/MarkdownSection.tsx`:** `<hr>` 테두리 색상 및 `<blockquote>` 배경색을 변수로 변경
+- **`src/app/page.tsx`:** 노트북 및 바인더 핀의 `boxShadow` 값, 스크롤 힌트 팝업 색상을 변수로 변경
+- **`src/content/1. home.tsx`:** 확인 결과 이미 `var(--kraft-dark)`, `var(--text-primary)` 등 기존 정의된 변수를 완벽하게 사용 중이므로 별도의 수정은 필요하지 않습니다.
 
-### 2. 블로그 섹션 (이후 작업)
+## Step 4. ThemeToggle 컴포넌트 생성 (`src/components/common/ThemeToggle.tsx`)
 
-노션에서 작성한 글을 사이트에 표시.
+- `next-themes`의 `useTheme` 훅을 사용하는 토글 버튼 컴포넌트를 생성합니다.
+- 클라이언트 렌더링(Mounted 상태) 확인 후 렌더링하여 Hydration 에러를 방지합니다.
+- 사용자가 직관적으로 인지할 수 있도록 해(Sun)/달(Moon) 아이콘 등을 활용하여 UI를 구성합니다. 스타일은 기존 사이드바 링크 버튼 등과 어울리도록 합니다.
 
-#### 구조
-```
-[sia819.github.io (정적 사이트)]
-        │
-        │ fetch (클라이언트 사이드)
-        ▼
-[NAS 서버 - Notion API 중계 서버]
-        │
-        │ Notion API 호출
-        ▼
-[Notion 데이터베이스]
-```
+## Step 5. ThemeToggle 배치 (`src/app/page.tsx`)
 
-#### NAS 서버 역할
-- Notion API 키를 안전하게 보관 (클라이언트에 노출 안 됨)
-- Notion API를 호출해서 글 목록/내용을 JSON으로 반환
-- CORS 설정으로 sia819.github.io에서만 접근 허용
+생성한 토글 컴포넌트를 적절한 위치에 배치합니다.
+- **데스크탑:** 좌측 프로필 사이드바(`<aside>`) 하단 (링크 버튼 목록 아래 등)
+- **모바일:** 상단 프로필 헤더(md:hidden div) 우측 또는 적절한 여백
 
-#### 블로그 기능
-- 글 목록 페이지 (`/blog`)
-- 글 상세 페이지 (`/blog/[slug]`)
-- 노션에서 글 작성 → NAS 서버가 중계 → 사이트에 표시
-- 카테고리/태그 필터
+## 검증 (Validation)
 
-### 3. 네비게이션
-
-- 상단 고정 헤더 (스크롤 시에도 보임)
-- 메뉴: Home(이력서) | Blog | (추후 확장 가능)
-
----
-
-## 구현 순서
-
-### Phase 1: 이력서 페이지 (지금 해야 할 것)
-1. 이력서 데이터 구조 설계 (타입 정의 + 샘플 데이터)
-2. A4 블록 레이아웃 컴포넌트
-3. 각 섹션 컴포넌트 (프로필, 기술, 경력, 프로젝트, 학력)
-4. 네비게이션 헤더
-5. 반응형 + 다크모드
-
-### Phase 2: 블로그 기초 (NAS 서버 없이)
-1. `/blog` 라우트 추가
-2. 블로그 목록/상세 페이지 레이아웃
-3. 목업 데이터로 UI 먼저 구현
-
-### Phase 3: 노션 연동 (NAS 서버 구축 후)
-1. NAS에 Notion API 중계 서버 구축
-2. 블로그 페이지에서 NAS API 호출 연동
-3. 노션 블록 → HTML 렌더링
-
----
-
-## 기술적 결정 사항
-
-| 항목 | 결정 | 이유 |
-|------|------|------|
-| 프레임워크 | Next.js (static export) | GitHub Pages 호환, React 기반 |
-| CSS | Tailwind CSS | 빠른 개발, 유틸리티 기반 |
-| 라우팅 | Next.js App Router | 기본 내장, 파일 기반 라우팅 |
-| 데이터 | TS 상수 파일 (이력서) / API fetch (블로그) | 이력서는 정적, 블로그는 동적 |
-| 배포 | GitHub Actions → GitHub Pages | main push 시 자동 |
-| 브랜치 | main(배포) + dev(개발) | 안전한 배포 |
-| 언어 | 한국어 응답, 영어 코드 | CLAUDE.md 규칙 |
-| 커밋 | Conventional Commits | 일관된 이력 관리 |
-
----
-
-## 파일 구조 (목표)
-
-```
-src/
-├── app/
-│   ├── layout.tsx          # 루트 레이아웃 (헤더 포함)
-│   ├── page.tsx            # 메인 = 이력서 페이지
-│   ├── globals.css         # 글로벌 스타일
-│   └── blog/               # (Phase 2)
-│       ├── page.tsx        # 블로그 목록
-│       └── [slug]/
-│           └── page.tsx    # 블로그 상세
-├── components/
-│   ├── layout/
-│   │   ├── Header.tsx      # 네비게이션 헤더
-│   │   └── Footer.tsx      # 푸터
-│   └── sections/
-│       ├── HeroSection.tsx       # 프로필/히어로
-│       ├── AboutSection.tsx      # 소개
-│       ├── SkillsSection.tsx     # 기술 스택
-│       ├── CareerSection.tsx     # 경력
-│       ├── ProjectsSection.tsx   # 프로젝트
-│       └── EducationSection.tsx  # 학력/자격증
-├── data/
-│   └── resume.ts           # 이력서 데이터 (JSON-like 상수)
-├── types/
-│   └── resume.ts           # 이력서 타입 정의
-└── lib/
-    └── api.ts              # (Phase 3) NAS API 호출 함수
-```
+1. 로컬 개발 서버(`npm run dev`)에서 라이트/다크 모드 전환 시 FOUC(깜빡임) 없이 부드럽게 전환되는지 확인.
+2. 시스템 설정(OS 테마) 변경 시 즉시 반영되는지 확인.
+3. 각종 마크다운 요소(코드 블록, 콜아웃, 인용구 등)가 다크 테마에서 가독성 있게 렌더링되는지 확인.
+4. 브라우저 새로고침 후에도 선택한 테마가 유지되는지 확인.
