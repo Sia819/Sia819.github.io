@@ -256,3 +256,12 @@ details > *:not(summary) {
 .animate-fade-in {
   animation: fade-in 0.2s ease-out;
 }
+
+/* 콘텐츠 전환 페이드인 */
+@keyframes content-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-content-in {
+  animation: content-in 0.15s ease-out;
+}
