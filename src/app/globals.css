@@ -75,6 +75,10 @@
   --scrollbar-track: var(--border-warm);
   --scrollbar-thumb: var(--kraft-dark);
   --scrollbar-thumb-hover: var(--spine);
+
+  /* 모달 */
+  --modal-bg: rgba(0, 0, 0, 0.7);
+  --modal-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
 }
 
 [data-theme="dark"] {
@@ -150,6 +154,10 @@
   --scrollbar-track: #1c2128;
   --scrollbar-thumb: #484f58;
   --scrollbar-thumb-hover: #8b949e;
+
+  /* 모달 */
+  --modal-bg: rgba(0, 0, 0, 0.85);
+  --modal-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
 }
 
 /* 테마 전환 트랜지션 (글로벌 * 대신 주요 배경/텍스트 영역에만 적용하여 충돌 방지) */

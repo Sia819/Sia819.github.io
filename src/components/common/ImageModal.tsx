@@ -38,14 +38,14 @@ const ImageModal = ({ src, alt, children }: ImageModalProps) => {
         createPortal(
           <div
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
-            style={{ backgroundColor: 'rgba(0, 0, 0, 0.7)' }}
+            style={{ backgroundColor: 'var(--modal-bg)' }}
             onClick={close}
           >
             <img
               src={src}
               alt={alt || ''}
               className="max-h-[90vh] max-w-[90vw] rounded-lg object-contain"
-              style={{ boxShadow: '0 8px 40px rgba(0, 0, 0, 0.4)' }}
+              style={{ boxShadow: 'var(--modal-shadow)' }}
               onClick={(e) => e.stopPropagation()}
             />
           </div>,
