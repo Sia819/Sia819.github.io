@@ -6,6 +6,7 @@ import { TAB_CONTENT } from '@/generated/content';
 import { TabStrip, ALL_TABS, ALL_TAB_IDS, HOME_TAB } from '@/components/tabs/TabButton';
 import useTabWheel from '@/hooks/useTabWheel';
 import useHashSync from '@/hooks/useHashSync';
+import ThemeToggle from '@/components/common/ThemeToggle';
 
 /* ──────────────────────────────────────────────
  * 메인 컴포넌트
@@ -44,7 +45,7 @@ export default function Home() {
       <div
         onWheel={handleOuterWheel}
         className="relative flex w-full overflow-hidden xl:max-w-[1100px] xl:my-6 xl:rounded-md"
-        style={{ boxShadow: '0 4px 30px rgba(0,0,0,0.12)' }}
+        style={{ boxShadow: 'var(--shadow-notebook)' }}
       >
 
         {/* === 왼쪽 사이드바 (프로필) === */}
@@ -111,19 +112,23 @@ export default function Home() {
                 rel="noopener noreferrer"
                 className="block rounded px-3 py-1.5 text-center text-sm transition-colors"
                 style={{
-                  backgroundColor: 'var(--kraft-dark)',
-                  color: 'var(--kraft-light)',
+                  backgroundColor: 'var(--sidebar-btn-bg)',
+                  color: 'var(--sidebar-btn-text)',
+                  border: '1px solid var(--border-warm)',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--spine)';
+                  e.currentTarget.style.backgroundColor = 'var(--sidebar-btn-hover)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--kraft-dark)';
+                  e.currentTarget.style.backgroundColor = 'var(--sidebar-btn-bg)';
                 }}
               >
                 {link.label}
               </a>
             ))}
+          </div>
+          <div className="mt-auto pt-6">
+            <ThemeToggle />
           </div>
         </aside>
 
@@ -142,7 +147,7 @@ export default function Home() {
                 top: `${18 + i * 16}%`,
                 backgroundColor: 'var(--desk)',
                 border: '2px solid var(--spine)',
-                boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.2)',
+                boxShadow: 'var(--shadow-binder-pin)',
               }}
             />
           ))}
@@ -152,22 +157,25 @@ export default function Home() {
         <div className="relative flex min-w-0 flex-1 flex-col">
           {/* 모바일: 프로필 헤더 */}
           <div
-            className="flex items-center gap-4 px-5 py-4 md:hidden"
+            className="flex items-center justify-between px-5 py-4 md:hidden"
             style={{ backgroundColor: 'var(--kraft)' }}
           >
-            <img
-              src="https://avatars.githubusercontent.com/u/18740181"
-              alt={profile.name}
-              className="h-14 w-14 shrink-0 rounded-full object-cover"
-            />
-            <div>
-              <h1 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
-                {profile.name}
-              </h1>
-              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                {profile.title}
-              </p>
+            <div className="flex items-center gap-4">
+              <img
+                src="https://avatars.githubusercontent.com/u/18740181"
+                alt={profile.name}
+                className="h-14 w-14 shrink-0 rounded-full object-cover"
+              />
+              <div>
+                <h1 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
+                  {profile.name}
+                </h1>
+                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                  {profile.title}
+                </p>
+              </div>
             </div>
+            <ThemeToggle />
           </div>
 
           {/* 모바일: 탭 스트립 */}
@@ -196,9 +204,9 @@ export default function Home() {
                 <span
                   className="rounded-full px-4 py-1 text-xs"
                   style={{
-                    backgroundColor: '#e8f1fa',
-                    color: '#5a7fa0',
-                    border: '1px solid #c4d8ec',
+                    backgroundColor: 'var(--hint-bg)',
+                    color: 'var(--hint-text)',
+                    border: '1px solid var(--hint-border)',
                   }}
                 >
                   {hint.direction === 'down'

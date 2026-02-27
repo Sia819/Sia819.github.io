@@ -44,7 +44,7 @@ const HomeContent = ({ accentColor }: HomeContentProps) => {
         {/* 부제 */}
         <p
           className="max-w-sm text-sm leading-relaxed"
-          style={{ color: 'var(--text-muted)' }}
+          style={{ color: 'var(--text-secondary)' }}
         >
           {profile.subtitle}
         </p>
