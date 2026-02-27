@@ -1,8 +1,6 @@
 import { redirect, notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { ALL_TAB_METAS } from '@/generated/tab-defs';
-import { TAB_CONTENT_MAP } from '@/generated/tab-content-map';
-import { ALL_TABS } from '@/lib/tabs';
+import { ALL_TAB_METAS, TAB_CONTENT_MAP, ALL_TABS } from '@/lib/tabs';
 import TabContentRenderer from '@/components/sections/TabContentRenderer';
 
 // 정적 경로에서 제외할 탭 (home은 루트 / 에서 처리)

@@ -1,11 +1,20 @@
-import { ALL_TAB_METAS } from '@/generated/tab-defs';
-
 /* ──────────────────────────────────────────────
- * 탭 정의 (Server/Client 공용)
+ * 탭 정의 및 콘텐츠 (Server/Client 공용)
  *
- * TabButton.tsx('use client')에서도, page.tsx(Server Component)에서도
- * 동일한 탭 데이터를 참조할 수 있도록 분리.
+ * generated/ 폴더의 유일한 소비자.
+ * 다른 모든 파일은 이 모듈을 통해서만 탭 데이터에 접근한다.
  * ────────────────────────────────────────────── */
+
+// --- generated imports (이 파일에서만 참조) ---
+import { ALL_TAB_METAS, type TabDefMeta } from '@/generated/tab-defs';
+import { TAB_CONTENT_MAP, type TabContent } from '@/generated/tab-content-map';
+import homeContent from '@/generated/tab-home';
+
+// --- re-exports ---
+export type { TabDefMeta, TabContent };
+export { ALL_TAB_METAS, TAB_CONTENT_MAP, homeContent };
+
+// --- TabDef ---
 
 export interface TabDef {
   readonly id: string;
