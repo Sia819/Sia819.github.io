@@ -1,25 +1,12 @@
 import { redirect, notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { ALL_TAB_METAS } from '@/generated/tab-defs';
+import { TAB_CONTENT_MAP } from '@/generated/tab-content-map';
 import { ALL_TABS } from '@/lib/tabs';
 import TabContentRenderer from '@/components/sections/TabContentRenderer';
 
-import tabResume from '@/generated/tab-resume';
-import tabIntroduction from '@/generated/tab-introduction';
-import tabCareer from '@/generated/tab-career';
-import tabAbout from '@/generated/tab-about';
-import type { TabContent } from '@/generated/tab-home';
-
 // 정적 경로에서 제외할 탭 (home은 루트 / 에서 처리)
 const EXCLUDED_IDS = new Set(['home']);
-
-// 탭별 콘텐츠 (정적 import — 프리패치 시 함께 로드됨)
-const TAB_CONTENT: Record<string, TabContent> = {
-  resume: tabResume,
-  introduction: tabIntroduction,
-  career: tabCareer,
-  about: tabAbout,
-};
 
 // 빌드 타임에 모든 탭 경로를 정적 HTML로 생성
 export function generateStaticParams() {
@@ -59,7 +46,7 @@ export default async function TabPage({ params }: { params: Promise<{ tabId: str
     redirect('/');
   }
 
-  const tabContent = TAB_CONTENT[tabId];
+  const tabContent = TAB_CONTENT_MAP[tabId];
   if (!tabContent) {
     notFound();
   }

@@ -1,7 +1,7 @@
 'use client';
 
 import MarkdownSection from '@/components/sections/MarkdownSection';
-import type { TabContent } from '@/generated/tab-home';
+import type { TabContent } from '@/generated/tab-content-map';
 
 interface TabContentRendererProps {
   tab: TabContent;
