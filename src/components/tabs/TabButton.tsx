@@ -1,40 +1,19 @@
+'use client';
+
 import { useRef, useEffect, useState } from 'react';
-import { CONTENT_TAB_DEFS } from '@/generated/content';
+import Link from 'next/link';
+import {
+  ALL_TABS,
+  HOME_TAB,
+  ABOUT_TAB,
+  CONTENT_TABS,
+  tabIdToPath,
+  type TabDef,
+} from '@/lib/tabs';
 
-/* ──────────────────────────────────────────────
- * 타입 & 상수
- * ────────────────────────────────────────────── */
-
-export interface TabDef {
-  readonly id: string;
-  readonly label: string;
-  readonly icon: 'home' | 'about' | null;
-  readonly color: string;
-}
-
-// 정적 페이지 탭 (고정 위치)
-export const HOME_TAB: TabDef = { id: 'home', label: '', icon: 'home', color: 'var(--tab-home)' };
-export const ABOUT_TAB: TabDef = { id: 'about', label: '', icon: 'about', color: 'var(--tab-about)' };
-
-// 콘텐츠 탭 색상 팔레트 (CSS 변수와 동기화, 순환 적용)
-const TAB_PALETTE = [
-  'var(--tab-palette-1)',
-  'var(--tab-palette-2)',
-  'var(--tab-palette-3)',
-  'var(--tab-palette-4)',
-  'var(--tab-palette-5)',
-];
-
-// 콘텐츠 탭 (content에서 동적으로 생성)
-export const CONTENT_TABS: readonly TabDef[] = CONTENT_TAB_DEFS.map((tab, i) => ({
-  ...tab,
-  icon: null,
-  color: TAB_PALETTE[i % TAB_PALETTE.length],
-}));
-
-// 전체 탭 순서 (휠 네비게이션용)
-export const ALL_TABS: readonly TabDef[] = [HOME_TAB, ...CONTENT_TABS, ABOUT_TAB];
-export const ALL_TAB_IDS = ALL_TABS.map((t) => t.id);
+// re-export for backward compatibility
+export { ALL_TABS, ALL_TAB_IDS, HOME_TAB, ABOUT_TAB, CONTENT_TABS, tabIdToPath, pathToTabId } from '@/lib/tabs';
+export type { TabDef } from '@/lib/tabs';
 
 /* ──────────────────────────────────────────────
  * 아이콘
@@ -80,9 +59,6 @@ const TabIcon = ({ icon, color }: { icon: 'home' | 'about'; color: string }) => 
 
 /* ──────────────────────────────────────────────
  * 탭 활성/비활성 상태별 스타일 계산
- *
- * 배경색, 투명도, 그림자, 폰트 굵기, 글자색을
- * 활성 여부에 따라 반환한다.
  * ────────────────────────────────────────────── */
 
 const getTabStyle = (tab: TabDef, activeTab: string) => {
@@ -101,28 +77,24 @@ const getTabStyle = (tab: TabDef, activeTab: string) => {
 
 /* ──────────────────────────────────────────────
  * 탭 버튼 컴포넌트
- *
- * desktop(세로)과 mobile(가로)은 축만 다르고 로직은 동일.
- * vertical 플래그로 축을 전환한다.
  * ────────────────────────────────────────────── */
 
 interface TabButtonProps {
   tab: TabDef;
   activeTab: string;
-  onSelect: (id: string) => void;
   variant: 'desktop' | 'mobile';
 }
 
-const ACTIVE_SIZE = '32px';    // 활성 탭의 두께 (데스크탑: width, 모바일: height)
-const INACTIVE_SIZE = '26px';  // 비활성 탭의 두께
-const ACTIVE_MAX = '150px';    // 활성 탭의 최대 길이 (데스크탑: maxHeight, 모바일: maxWidth)
-const INACTIVE_MAX = '130px';  // 비활성 탭의 최대 길이
-const VERTICAL_WORD_SPACING = '-0.6em'; // 세로 쓰기 시 공백 간격 축소 (upright 모드에서 공백이 1em 전체를 차지하므로)
+const ACTIVE_SIZE = '32px';
+const INACTIVE_SIZE = '26px';
+const ACTIVE_MAX = '150px';
+const INACTIVE_MAX = '130px';
+const VERTICAL_WORD_SPACING = '-0.6em';
 
-const TabButton = ({ tab, activeTab, onSelect, variant }: TabButtonProps) => {
+const TabButton = ({ tab, activeTab, variant }: TabButtonProps) => {
   const vertical = variant === 'desktop';
   const { isActive, buttonStyle, textClass, textColor } = getTabStyle(tab, activeTab);
-  const btnRef = useRef<HTMLButtonElement>(null);
+  const linkRef = useRef<HTMLAnchorElement>(null);
   const textRef = useRef<HTMLSpanElement>(null);
   const [isTruncated, setIsTruncated] = useState(false);
 
@@ -131,12 +103,12 @@ const TabButton = ({ tab, activeTab, onSelect, variant }: TabButtonProps) => {
 
   // 활성 탭이 스크롤 영역 밖이면 자동으로 보이게 스크롤
   useEffect(() => {
-    if (isActive && btnRef.current) {
-      btnRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+    if (isActive && linkRef.current) {
+      linkRef.current.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
     }
   }, [isActive]);
 
-  // 텍스트 잘림 감지 (ResizeObserver로 transition 완료 후 재측정)
+  // 텍스트 잘림 감지
   useEffect(() => {
     const el = textRef.current;
     if (!el || tab.icon) return;
@@ -153,11 +125,13 @@ const TabButton = ({ tab, activeTab, onSelect, variant }: TabButtonProps) => {
     return () => ro.disconnect();
   }, [tab.icon, tab.label, vertical]);
 
+  const href = tabIdToPath(tab.id);
+
   return (
-    <button
-      ref={btnRef}
-      key={tab.id}
-      onClick={() => onSelect(tab.id)}
+    <Link
+      ref={linkRef}
+      href={href}
+      prefetch={false}
       title={!tab.icon && isTruncated ? tab.label : undefined}
       className={[
         'relative flex items-center justify-center shrink-0 overflow-hidden transition-all duration-150',
@@ -207,18 +181,15 @@ const TabButton = ({ tab, activeTab, onSelect, variant }: TabButtonProps) => {
           )}
         </>
       )}
-    </button>
+    </Link>
   );
 };
 
 /* ──────────────────────────────────────────────
  * 탭 스크롤 컨테이너
- *
- * 가로(모바일)/세로(데스크탑) 공용.
- * 스크롤 가능한 방향에 페이드 그라데이션 표시.
  * ────────────────────────────────────────────── */
 
-const FADE_SIZE = 24; // 스크롤 끝 페이드 그라데이션 크기 (px)
+const FADE_SIZE = 24;
 
 interface TabScrollContainerProps {
   vertical: boolean;
@@ -291,33 +262,30 @@ const TabScrollContainer = ({ vertical, size, padding, children }: TabScrollCont
 };
 
 /* ──────────────────────────────────────────────
- * 탭 스트립 (탭 목록 + 액센트 라인)
- *
- * 모바일/데스크탑 공통 구조를 한 곳에서 관리.
+ * 탭 스트립
  * ────────────────────────────────────────────── */
 
-const ACCENT_SIZE = '6px';  // 활성 탭 색상을 나타내는 액센트 라인 두께
-const STRIP_SIZE = '44px';  // 탭 스트립 전체 두께 (데스크탑: width, 모바일: height)
-const STRIP_PADDING = 4;    // 탭 스트립 안쪽 여백 (Tailwind 단위, 16px)
+const ACCENT_SIZE = '6px';
+const STRIP_SIZE = '44px';
+const STRIP_PADDING = 4;
 
 interface TabStripProps {
   activeTab: string;
   accentColor: string;
-  onSelect: (id: string) => void;
   variant: 'desktop' | 'mobile';
 }
 
-export const TabStrip = ({ activeTab, accentColor, onSelect, variant }: TabStripProps) => {
+export const TabStrip = ({ activeTab, accentColor, variant }: TabStripProps) => {
   const vertical = variant === 'desktop';
 
   const tabList = (
     <>
-      <TabButton tab={HOME_TAB} activeTab={activeTab} onSelect={onSelect} variant={variant} />
+      <TabButton tab={HOME_TAB} activeTab={activeTab} variant={variant} />
       {CONTENT_TABS.map((tab) => (
-        <TabButton key={tab.id} tab={tab} activeTab={activeTab} onSelect={onSelect} variant={variant} />
+        <TabButton key={tab.id} tab={tab} activeTab={activeTab} variant={variant} />
       ))}
       <div className="flex-1" />
-      <TabButton tab={ABOUT_TAB} activeTab={activeTab} onSelect={onSelect} variant={variant} />
+      <TabButton tab={ABOUT_TAB} activeTab={activeTab} variant={variant} />
     </>
   );
 

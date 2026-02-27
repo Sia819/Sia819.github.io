@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, Geist_Mono } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
+import NotebookShell from '@/components/layout/NotebookShell';
 import './globals.css';
 
 const inter = Inter({
@@ -38,7 +39,9 @@ export default function RootLayout({
         className={`${inter.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
-          {children}
+          <NotebookShell>
+            {children}
+          </NotebookShell>
         </ThemeProvider>
       </body>
     </html>
