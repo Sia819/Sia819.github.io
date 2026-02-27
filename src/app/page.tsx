@@ -28,13 +28,27 @@ export default function Home() {
   const showPaperLines = false;
 
   const renderContent = () => {
-    const tab = TAB_CONTENT[activeTab];
-    if (!tab) return null;
-    if (tab.type === 'markdown') {
-      return <MarkdownSection content={tab.content} accentColor={activeTabDef.color} />;
-    }
-    const Component = tab.component;
-    return <Component accentColor={activeTabDef.color} />;
+    return ALL_TAB_IDS.map((tabId) => {
+      const tab = TAB_CONTENT[tabId];
+      if (!tab) return null;
+
+      const isActive = activeTab === tabId;
+      const tabDef = ALL_TABS.find((t) => t.id === tabId) ?? HOME_TAB;
+
+      let contentNode;
+      if (tab.type === 'markdown') {
+        contentNode = <MarkdownSection content={tab.content} accentColor={tabDef.color} />;
+      } else {
+        const Component = tab.component;
+        contentNode = <Component accentColor={tabDef.color} />;
+      }
+
+      return (
+        <div key={tabId} style={{ display: isActive ? 'block' : 'none' }}>
+          {contentNode}
+        </div>
+      );
+    });
   };
 
   return (
