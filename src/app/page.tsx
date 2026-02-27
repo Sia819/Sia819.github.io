@@ -1,12 +1,12 @@
 'use client';
 
-import { resumeData } from '@/data/resume';
 import MarkdownSection from '@/components/sections/MarkdownSection';
 import { TAB_CONTENT } from '@/generated/content';
 import { TabStrip, ALL_TABS, ALL_TAB_IDS, HOME_TAB } from '@/components/tabs/TabButton';
 import useTabWheel from '@/hooks/useTabWheel';
 import useHashSync from '@/hooks/useHashSync';
-import ThemeToggle from '@/components/common/ThemeToggle';
+import ProfileSidebar from '@/components/layout/ProfileSidebar';
+import ProfileMobile from '@/components/layout/ProfileMobile';
 
 /* ──────────────────────────────────────────────
  * 메인 컴포넌트
@@ -37,8 +37,6 @@ export default function Home() {
     return <Component accentColor={activeTabDef.color} />;
   };
 
-  const { profile } = resumeData;
-
   return (
     <div className="flex h-screen items-stretch justify-center">
       {/* 노트북 전체 컨테이너 */}
@@ -49,88 +47,7 @@ export default function Home() {
       >
 
         {/* === 왼쪽 사이드바 (프로필) === */}
-        <aside
-          className="hidden w-[260px] shrink-0 flex-col items-center px-6 py-10 md:flex"
-          style={{ backgroundColor: 'var(--kraft)' }}
-        >
-          <img
-            src="https://avatars.githubusercontent.com/u/18740181"
-            alt={profile.name}
-            className="mb-5 h-28 w-28 rounded-full object-cover"
-            style={{ border: '3px solid var(--kraft-light)' }}
-          />
-          <h1
-            className="mb-1 text-center text-xl font-bold"
-            style={{ color: 'var(--sidebar-name)' }}
-          >
-            {profile.name}
-          </h1>
-          <p
-            className="mb-1 text-center text-sm font-medium"
-            style={{ color: 'var(--sidebar-text)' }}
-          >
-            {profile.title}
-          </p>
-          <p
-            className="mb-6 text-center text-xs"
-            style={{ color: 'var(--sidebar-muted)' }}
-          >
-            {profile.subtitle}
-          </p>
-          <div
-            className="mb-6 w-full"
-            style={{ borderTop: '1px solid var(--kraft-dark)' }}
-          />
-          <div className="mb-6 flex w-full flex-col gap-2 text-sm">
-            {profile.email && (
-              <div className="flex items-center gap-2">
-                <span className="inline-flex w-4 shrink-0 justify-center" style={{ color: 'var(--sidebar-muted)' }}>@</span>
-                <a
-                  href={`mailto:${profile.email}`}
-                  className="break-all underline-offset-2 hover:underline"
-                  style={{ color: 'var(--sidebar-text)' }}
-                >
-                  {profile.email}
-                </a>
-              </div>
-            )}
-            {profile.location && (
-              <div className="flex items-center gap-2">
-                <span className="inline-flex w-4 shrink-0 justify-center" style={{ color: 'var(--sidebar-muted)' }}>&#9906;</span>
-                <span style={{ color: 'var(--sidebar-text)' }}>
-                  {profile.location}
-                </span>
-              </div>
-            )}
-          </div>
-          <div className="flex w-full flex-col gap-2">
-            {profile.links.map((link) => (
-              <a
-                key={link.label}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block rounded px-3 py-1.5 text-center text-sm transition-colors"
-                style={{
-                  backgroundColor: 'var(--sidebar-btn-bg)',
-                  color: 'var(--sidebar-btn-text)',
-                  border: '1px solid var(--border-warm)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--sidebar-btn-hover)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--sidebar-btn-bg)';
-                }}
-              >
-                {link.label}
-              </a>
-            ))}
-          </div>
-          <div className="mt-auto pt-6">
-            <ThemeToggle />
-          </div>
-        </aside>
+        <ProfileSidebar />
 
         {/* === 바인더 스파인 === */}
         <div
@@ -156,27 +73,7 @@ export default function Home() {
         {/* === 메인 콘텐츠 영역 === */}
         <div className="relative flex min-w-0 flex-1 flex-col">
           {/* 모바일: 프로필 헤더 */}
-          <div
-            className="flex items-center justify-between px-5 py-4 md:hidden"
-            style={{ backgroundColor: 'var(--kraft)' }}
-          >
-            <div className="flex items-center gap-4">
-              <img
-                src="https://avatars.githubusercontent.com/u/18740181"
-                alt={profile.name}
-                className="h-14 w-14 shrink-0 rounded-full object-cover"
-              />
-              <div>
-                <h1 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>
-                  {profile.name}
-                </h1>
-                <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-                  {profile.title}
-                </p>
-              </div>
-            </div>
-            <ThemeToggle />
-          </div>
+          <ProfileMobile />
 
           {/* 모바일: 탭 스트립 */}
           <div className="min-w-0 md:hidden">

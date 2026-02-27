@@ -1,12 +1,10 @@
-import { resumeData } from '@/data/resume';
+import { profile } from '@/data/profile';
 
 interface HomeContentProps {
   accentColor: string;
 }
 
 const HomeContent = ({ accentColor }: HomeContentProps) => {
-  const { profile } = resumeData;
-
   return (
     <div className="flex h-full flex-col items-center justify-center text-center">
       {/* 책 표지 스타일 */}
@@ -19,7 +17,7 @@ const HomeContent = ({ accentColor }: HomeContentProps) => {
 
         {/* 아바타 */}
         <img
-          src="https://avatars.githubusercontent.com/u/18740181"
+          src={profile.avatar}
           alt={profile.name}
           className="h-32 w-32 rounded-full object-cover"
           style={{ border: '3px solid var(--kraft-dark)' }}
@@ -57,15 +55,13 @@ const HomeContent = ({ accentColor }: HomeContentProps) => {
 
         {/* 연락처 & 링크 */}
         <div className="mt-2 flex flex-col items-center gap-2 text-sm">
-          {profile.email && (
-            <a
-              href={`mailto:${profile.email}`}
-              className="underline-offset-2 hover:underline"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              {profile.email}
-            </a>
-          )}
+          <a
+            href={`mailto:${profile.email}`}
+            className="underline-offset-2 hover:underline"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            {profile.email}
+          </a>
           <div className="flex gap-4">
             {profile.links.map((link) => (
               <a
