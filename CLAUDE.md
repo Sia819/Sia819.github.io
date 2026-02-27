@@ -35,7 +35,9 @@ src/
 │   │   └── markdown/               # 마크다운 하위 컴포넌트 (CodeBlock, Callout)
 │   └── tabs/               # 탭 UI 컴포넌트
 │       └── TabButton.tsx    # 탭 버튼 + 탭 스트립
-├── content/                # 콘텐츠 원본 파일 (<번호>. <id>.md|tsx 형식)
+├── content/                # 콘텐츠 원본 파일 (파일명 규칙: "<번호>. <id>.<확장자>")
+│   ├── *.md                #   마크다운 → { type: 'markdown' } 탭으로 변환
+│   └── *.tsx               #   React 컴포넌트 → { type: 'component' } 탭으로 변환
 ├── generated/              # 자동 생성 파일 (직접 import 금지 — 아래 주의사항 참고)
 ├── lib/
 │   └── tabs.ts             # 탭 정의 및 콘텐츠 (generated의 유일한 소비자)
