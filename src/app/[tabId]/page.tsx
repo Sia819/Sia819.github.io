@@ -2,10 +2,24 @@ import { redirect, notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { ALL_TAB_METAS } from '@/generated/tab-defs';
 import { ALL_TABS } from '@/lib/tabs';
-import dynamic from 'next/dynamic';
+import TabContentRenderer from '@/components/sections/TabContentRenderer';
+
+import tabResume from '@/generated/tab-resume';
+import tabIntroduction from '@/generated/tab-introduction';
+import tabCareer from '@/generated/tab-career';
+import tabAbout from '@/generated/tab-about';
+import type { TabContent } from '@/generated/tab-home';
 
 // 정적 경로에서 제외할 탭 (home은 루트 / 에서 처리)
 const EXCLUDED_IDS = new Set(['home']);
+
+// 탭별 콘텐츠 (정적 import — 프리패치 시 함께 로드됨)
+const TAB_CONTENT: Record<string, TabContent> = {
+  resume: tabResume,
+  introduction: tabIntroduction,
+  career: tabCareer,
+  about: tabAbout,
+};
 
 // 빌드 타임에 모든 탭 경로를 정적 HTML로 생성
 export function generateStaticParams() {
@@ -37,14 +51,6 @@ export async function generateMetadata(
   };
 }
 
-// 탭별 Client Component를 dynamic import로 코드 분할
-const TAB_PAGES: Record<string, React.ComponentType> = {
-  resume: dynamic(() => import('./tabs/ResumeTab')),
-  introduction: dynamic(() => import('./tabs/IntroductionTab')),
-  career: dynamic(() => import('./tabs/CareerTab')),
-  about: dynamic(() => import('./tabs/AboutTab')),
-};
-
 export default async function TabPage({ params }: { params: Promise<{ tabId: string }> }) {
   const { tabId } = await params;
 
@@ -53,10 +59,13 @@ export default async function TabPage({ params }: { params: Promise<{ tabId: str
     redirect('/');
   }
 
-  const TabComponent = TAB_PAGES[tabId];
-  if (!TabComponent) {
+  const tabContent = TAB_CONTENT[tabId];
+  if (!tabContent) {
     notFound();
   }
 
-  return <TabComponent />;
+  const tabDef = ALL_TABS.find((t) => t.id === tabId);
+  const accentColor = tabDef?.color ?? 'var(--tab-palette-1)';
+
+  return <TabContentRenderer tab={tabContent} accentColor={accentColor} />;
 }
