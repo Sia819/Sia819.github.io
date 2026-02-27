@@ -6,21 +6,21 @@ import { Highlight, type PrismTheme } from 'prism-react-renderer';
 // kraft 팔레트에 맞춘 따뜻한 톤 Prism 테마
 const kraftTheme: PrismTheme = {
   plain: {
-    color: '#3e352a',
-    backgroundColor: '#faf6f0',
+    color: 'var(--code-text)',
+    backgroundColor: 'var(--code-bg)',
   },
   styles: [
-    { types: ['comment', 'prolog', 'doctype', 'cdata'], style: { color: '#9a8d7f', fontStyle: 'italic' as const } },
+    { types: ['comment', 'prolog', 'doctype', 'cdata'], style: { color: 'var(--code-comment)', fontStyle: 'italic' as const } },
     { types: ['namespace'], style: { opacity: 0.7 } },
-    { types: ['string', 'attr-value'], style: { color: '#7a9a5a' } },
-    { types: ['punctuation', 'operator'], style: { color: '#6b5e50' } },
-    { types: ['entity', 'url', 'symbol', 'number', 'boolean', 'variable', 'constant', 'property', 'regex', 'inserted'], style: { color: '#c48a20' } },
-    { types: ['atrule', 'keyword', 'attr-name', 'selector'], style: { color: '#9a6434' } },
-    { types: ['function', 'deleted', 'tag'], style: { color: '#b85c3a' } },
-    { types: ['function-variable'], style: { color: '#b85c3a' } },
-    { types: ['tag', 'selector', 'keyword'], style: { color: '#9a6434' } },
-    { types: ['class-name'], style: { color: '#c48a20' } },
-    { types: ['char', 'builtin'], style: { color: '#6a9a8a' } },
+    { types: ['string', 'attr-value'], style: { color: 'var(--code-string)' } },
+    { types: ['punctuation', 'operator'], style: { color: 'var(--code-punctuation)' } },
+    { types: ['entity', 'url', 'symbol', 'number', 'boolean', 'variable', 'constant', 'property', 'regex', 'inserted'], style: { color: 'var(--code-number)' } },
+    { types: ['atrule', 'keyword', 'attr-name', 'selector'], style: { color: 'var(--code-keyword)' } },
+    { types: ['function', 'deleted', 'tag'], style: { color: 'var(--code-function)' } },
+    { types: ['function-variable'], style: { color: 'var(--code-function)' } },
+    { types: ['tag', 'selector', 'keyword'], style: { color: 'var(--code-keyword)' } },
+    { types: ['class-name'], style: { color: 'var(--code-class)' } },
+    { types: ['char', 'builtin'], style: { color: 'var(--code-builtin)' } },
     { types: ['important'], style: { fontWeight: 'bold' as const } },
   ],
 };

@@ -92,10 +92,10 @@ const getTabStyle = (tab: TabDef, activeTab: string) => {
     buttonStyle: {
       backgroundColor: tab.color,
       opacity: isActive ? 1 : 0.7,
-      boxShadow: isActive ? 'none' : '1px 1px 3px rgba(0,0,0,0.1)',
+      boxShadow: isActive ? 'none' : 'var(--shadow-tab)',
     } as React.CSSProperties,
     textClass: `text-sm transition-all duration-150 ${isActive ? 'font-bold' : 'font-normal'}`,
-    textColor: isActive ? '#101010' : '#faf5eb',
+    textColor: isActive ? 'var(--tab-text-active)' : 'var(--tab-text-inactive)',
   };
 };
 
@@ -117,7 +117,7 @@ const ACTIVE_SIZE = '32px';    // 활성 탭의 두께 (데스크탑: width, 모
 const INACTIVE_SIZE = '26px';  // 비활성 탭의 두께
 const ACTIVE_MAX = '150px';    // 활성 탭의 최대 길이 (데스크탑: maxHeight, 모바일: maxWidth)
 const INACTIVE_MAX = '130px';  // 비활성 탭의 최대 길이
-const VERTICAL_WORD_SPACING = '-0.8em'; // 세로 쓰기 시 공백 간격 축소 (upright 모드에서 공백이 1em 전체를 차지하므로)
+const VERTICAL_WORD_SPACING = '-0.6em'; // 세로 쓰기 시 공백 간격 축소 (upright 모드에서 공백이 1em 전체를 차지하므로)
 
 const TabButton = ({ tab, activeTab, onSelect, variant }: TabButtonProps) => {
   const vertical = variant === 'desktop';

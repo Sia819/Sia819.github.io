@@ -16,9 +16,9 @@ const CALLOUT_CONFIG: Record<CalloutType, { icon: ReactNode; bg: string; border:
         <line x1="12" y1="8" x2="12.01" y2="8" />
       </svg>
     ),
-    bg: 'rgba(122, 158, 196, 0.1)',
-    border: '#7a9ec4',
-    iconColor: '#7a9ec4',
+    bg: 'var(--callout-note-bg)',
+    border: 'var(--callout-note-border)',
+    iconColor: 'var(--callout-note-border)',
     label: 'Note',
   },
   TIP: {
@@ -29,9 +29,9 @@ const CALLOUT_CONFIG: Record<CalloutType, { icon: ReactNode; bg: string; border:
         <path d="M2 12l10 5 10-5" />
       </svg>
     ),
-    bg: 'rgba(108, 180, 150, 0.1)',
-    border: '#6cb496',
-    iconColor: '#6cb496',
+    bg: 'var(--callout-tip-bg)',
+    border: 'var(--callout-tip-border)',
+    iconColor: 'var(--callout-tip-border)',
     label: 'Tip',
   },
   WARNING: {
@@ -42,9 +42,9 @@ const CALLOUT_CONFIG: Record<CalloutType, { icon: ReactNode; bg: string; border:
         <line x1="12" y1="17" x2="12.01" y2="17" />
       </svg>
     ),
-    bg: 'rgba(232, 160, 76, 0.1)',
-    border: '#e8a04c',
-    iconColor: '#e8a04c',
+    bg: 'var(--callout-warning-bg)',
+    border: 'var(--callout-warning-border)',
+    iconColor: 'var(--callout-warning-border)',
     label: 'Warning',
   },
   IMPORTANT: {
@@ -55,9 +55,9 @@ const CALLOUT_CONFIG: Record<CalloutType, { icon: ReactNode; bg: string; border:
         <path d="M12 16h.01" />
       </svg>
     ),
-    bg: 'rgba(212, 114, 106, 0.1)',
-    border: '#d4726a',
-    iconColor: '#d4726a',
+    bg: 'var(--callout-important-bg)',
+    border: 'var(--callout-important-border)',
+    iconColor: 'var(--callout-important-border)',
     label: 'Important',
   },
 };

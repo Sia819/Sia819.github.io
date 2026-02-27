@@ -16,6 +16,9 @@
   --sidebar-name: #1c1712;
   --sidebar-text: #3a3024;
   --sidebar-muted: #5c5040;
+  --sidebar-btn-bg: var(--kraft-dark);
+  --sidebar-btn-text: var(--kraft-light);
+  --sidebar-btn-hover: var(--spine);
   --accent: #c48a20;
 
   --tab-home: #7a9ec4;
@@ -27,6 +30,131 @@
   --tab-palette-3: #d4726a;
   --tab-palette-4: #e4b84c;
   --tab-palette-5: #6cb496;
+
+  /* 코드 블록 */
+  --code-bg: #faf6f0;
+  --code-text: #3e352a;
+  --code-comment: #9a8d7f;
+  --code-string: #7a9a5a;
+  --code-punctuation: #6b5e50;
+  --code-number: #c48a20;
+  --code-keyword: #9a6434;
+  --code-function: #b85c3a;
+  --code-class: #c48a20;
+  --code-builtin: #6a9a8a;
+
+  /* 탭 텍스트 */
+  --tab-text-active: #101010;
+  --tab-text-inactive: #faf5eb;
+
+  /* 스크롤 힌트 */
+  --hint-bg: #e8f1fa;
+  --hint-text: #5a7fa0;
+  --hint-border: #c4d8ec;
+
+  /* 콜아웃 */
+  --callout-note-bg: rgba(122, 158, 196, 0.1);
+  --callout-note-border: #7a9ec4;
+  --callout-tip-bg: rgba(108, 180, 150, 0.1);
+  --callout-tip-border: #6cb496;
+  --callout-warning-bg: rgba(232, 160, 76, 0.1);
+  --callout-warning-border: #e8a04c;
+  --callout-important-bg: rgba(212, 114, 106, 0.1);
+  --callout-important-border: #d4726a;
+
+  /* 기타 마크다운 */
+  --hr-color: #b0a8a0;
+  --blockquote-bg: rgba(196, 138, 32, 0.06);
+
+  /* 그림자 */
+  --shadow-notebook: 0 4px 30px rgba(0,0,0,0.12);
+  --shadow-binder-pin: inset 0 1px 2px rgba(0,0,0,0.2);
+  --shadow-tab: 1px 1px 3px rgba(0,0,0,0.1);
+
+  /* 스크롤바 */
+  --scrollbar-track: var(--border-warm);
+  --scrollbar-thumb: var(--kraft-dark);
+  --scrollbar-thumb-hover: var(--spine);
+}
+
+[data-theme="dark"] {
+  --paper: #161b22;
+  --paper-line: #21262d;
+  --kraft: #1c2128;
+  --kraft-light: #22272e;
+  --kraft-dark: #30363d;
+  --spine: #484f58;
+  --spine-light: #525964;
+  --desk: #0d1117;
+  --text-primary: #e6edf3;
+  --text-secondary: #c9d1d9;
+  --text-muted: #8b949e;
+  --border-warm: #30363d;
+  --sidebar-name: #e6edf3;
+  --sidebar-text: #c9d1d9;
+  --sidebar-muted: #8b949e;
+  --sidebar-btn-bg: #21262d;
+  --sidebar-btn-text: #c9d1d9;
+  --sidebar-btn-hover: #30363d;
+  --accent: #58a6ff;
+  
+  --tab-home: #316dca;
+  --tab-about: #6e7681;
+  --tab-palette-1: #238636;
+  --tab-palette-2: #d29922;
+  --tab-palette-3: #f85149;
+  --tab-palette-4: #bc8cff;
+  --tab-palette-5: #2f81f7;
+
+  /* 코드 블록 */
+  --code-bg: #0d1117;
+  --code-text: #e6edf3;
+  --code-comment: #8b949e;
+  --code-string: #a5d6ff;
+  --code-punctuation: #6e7681;
+  --code-number: #79c0ff;
+  --code-keyword: #ff7b72;
+  --code-function: #d2a8ff;
+  --code-class: #ff7b72;
+  --code-builtin: #79c0ff;
+
+  /* 탭 텍스트 */
+  --tab-text-active: #ffffff;
+  --tab-text-inactive: #c9d1d9;
+
+  /* 스크롤 힌트 */
+  --hint-bg: #1f242c;
+  --hint-text: #58a6ff;
+  --hint-border: #30363d;
+
+  /* 콜아웃 */
+  --callout-note-bg: rgba(47, 129, 247, 0.1);
+  --callout-note-border: #2f81f7;
+  --callout-tip-bg: rgba(35, 134, 54, 0.1);
+  --callout-tip-border: #238636;
+  --callout-warning-bg: rgba(210, 153, 34, 0.1);
+  --callout-warning-border: #d29922;
+  --callout-important-bg: rgba(248, 81, 73, 0.1);
+  --callout-important-border: #f85149;
+
+  /* 기타 마크다운 */
+  --hr-color: #30363d;
+  --blockquote-bg: rgba(88, 166, 255, 0.1);
+
+  /* 그림자 */
+  --shadow-notebook: 0 4px 30px rgba(0,0,0,0.5);
+  --shadow-binder-pin: inset 0 1px 2px rgba(0,0,0,0.6);
+  --shadow-tab: 1px 1px 3px rgba(0,0,0,0.5);
+
+  /* 스크롤바 (다크모드용으로 대비 높이기) */
+  --scrollbar-track: #1c2128;
+  --scrollbar-thumb: #484f58;
+  --scrollbar-thumb-hover: #8b949e;
+}
+
+/* 테마 전환 트랜지션 (글로벌 * 대신 주요 배경/텍스트 영역에만 적용하여 충돌 방지) */
+html, body, .notebook-content, aside, details, summary {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, fill 0.2s ease;
 }
 
 @theme inline {
@@ -58,21 +186,21 @@ body {
   width: 6px;
 }
 .notebook-content::-webkit-scrollbar-track {
-  background: var(--border-warm);
+  background: var(--scrollbar-track);
   border-radius: 3px;
 }
 .notebook-content::-webkit-scrollbar-thumb {
-  background: var(--kraft-dark);
+  background: var(--scrollbar-thumb);
   border-radius: 3px;
 }
 .notebook-content::-webkit-scrollbar-thumb:hover {
-  background: var(--spine);
+  background: var(--scrollbar-thumb-hover);
 }
 
 /* Firefox 스크롤바 */
 .notebook-content {
   scrollbar-width: thin;
-  scrollbar-color: var(--kraft-dark) var(--border-warm);
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
 /* 토글 (details/summary) 마커 스타일 */

@@ -165,7 +165,7 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
 
     // --- Divider ---
     hr: () => (
-      <hr className="my-8" style={{ borderColor: '#b0a8a0' }} />
+      <hr className="my-8" style={{ borderColor: 'var(--hr-color)' }} />
     ),
 
     // --- Code ---
@@ -229,7 +229,7 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
           className="my-4 rounded-r-lg py-2 pr-4 pl-4"
           style={{
             borderLeft: `3px solid ${accentColor}`,
-            backgroundColor: 'rgba(196, 138, 32, 0.06)',
+            backgroundColor: 'var(--blockquote-bg)',
           }}
         >
           {children}
