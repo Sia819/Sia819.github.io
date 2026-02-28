@@ -13,7 +13,49 @@ interface HintState {
 // ─── Debug: prefetch lifecycle tracker ───
 const DEBUG = process.env.NODE_ENV === 'development';
 
-const prefetchedPaths = new Set<string>();
+// LRU 프리패치 캐시 — Map 삽입 순서를 활용한 최소 구현
+const MAX_PREFETCH_CACHE = 10;
+const prefetchCache = new Map<string, number>(); // path → timestamp (삽입 순서 = LRU 순서)
+
+const prefetchLRU = {
+  has(path: string): boolean {
+    return prefetchCache.has(path);
+  },
+  /** 캐시에 추가. 이미 있으면 최신으로 갱신. 초과 시 가장 오래된 항목 제거. */
+  add(path: string, protectedPaths?: Set<string>): string | null {
+    // 이미 있으면 삭제 후 끝에 재삽입 (touch)
+    if (prefetchCache.has(path)) {
+      prefetchCache.delete(path);
+    }
+    prefetchCache.set(path, Date.now());
+
+    // 초과 시 보호 대상이 아닌 가장 오래된 항목 제거
+    let evicted: string | null = null;
+    if (prefetchCache.size > MAX_PREFETCH_CACHE) {
+      for (const [oldest] of prefetchCache) {
+        if (protectedPaths?.has(oldest)) continue;
+        prefetchCache.delete(oldest);
+        evicted = oldest;
+        break;
+      }
+    }
+    return evicted;
+  },
+  touch(path: string): void {
+    if (prefetchCache.has(path)) {
+      const ts = prefetchCache.get(path)!;
+      prefetchCache.delete(path);
+      prefetchCache.set(path, ts);
+    }
+  },
+  entries(): string[] {
+    return [...prefetchCache.keys()];
+  },
+  get size(): number {
+    return prefetchCache.size;
+  },
+};
+
 const navigationRequests = new Map<string, number>(); // path → request timestamp
 
 function debugLog(tag: string, msg: string, color: string = '#888') {
@@ -92,7 +134,7 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
       isNavigating.current = true;
 
       const targetPath = tabIdToPath(tabId);
-      const wasPrefetched = prefetchedPaths.has(targetPath);
+      const wasPrefetched = prefetchLRU.has(targetPath);
       navigationRequests.set(targetPath, performance.now());
 
       debugLog(
@@ -100,6 +142,9 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
         `→ ${tabId} (${targetPath}) | 프리패치 ${wasPrefetched ? '✅ 캐시됨' : '❌ 없음 — cold load'}`,
         wasPrefetched ? '#4caf50' : '#ff9800',
       );
+
+      // 전환 대상을 LRU에서 최신으로 갱신 (eviction 방지)
+      prefetchLRU.touch(targetPath);
 
       router.push(targetPath);
       // 네비게이션 후 잠시 뒤 플래그 해제
@@ -114,7 +159,7 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
   useEffect(() => {
     // 렌더링 완료 시점 측정
     const requestTime = navigationRequests.get(pathname);
-    const wasPrefetched = prefetchedPaths.has(pathname);
+    const wasPrefetched = prefetchLRU.has(pathname);
 
     if (requestTime) {
       const elapsed = (performance.now() - requestTime).toFixed(1);
@@ -143,20 +188,32 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
     if (contentRef.current) contentRef.current.scrollTop = 0;
   }, [pathname]);
 
-  // 인접 탭 프리패치
+  // 인접 탭 프리패치 (LRU 캐시 기반)
   useEffect(() => {
     const idx = allTabs.findIndex((t) => t.id === currentTabId);
+
+    // 현재 탭 + 인접 탭은 eviction 보호
+    const protectedPaths = new Set<string>();
+    protectedPaths.add(tabIdToPath(currentTabId));
+    if (idx > 0) protectedPaths.add(tabIdToPath(allTabs[idx - 1].id));
+    if (idx < allTabs.length - 1) protectedPaths.add(tabIdToPath(allTabs[idx + 1].id));
+
+    // 현재 탭을 LRU에서 최신으로 갱신
+    prefetchLRU.touch(tabIdToPath(currentTabId));
 
     const tryPrefetch = (tabIdx: number, direction: string) => {
       const tab = allTabs[tabIdx];
       if (!tab) return;
       const path = tabIdToPath(tab.id);
-      if (prefetchedPaths.has(path)) return;
+      if (prefetchLRU.has(path)) return;
 
       debugLog('프리패치', `${path} 서버 요청 (${direction} ${tab.id})`, '#9c27b0');
       router.prefetch(path);
-      prefetchedPaths.add(path);
-      debugLog('캐시', `프리패치된 리소스 목록: [${[...prefetchedPaths].join(', ')}]`, '#607d8b');
+      const evicted = prefetchLRU.add(path, protectedPaths);
+      if (evicted) {
+        debugLog('제거', `${evicted} 캐시에서 제거됨 (LRU ${prefetchLRU.size}/${MAX_PREFETCH_CACHE})`, '#e91e63');
+      }
+      debugLog('캐시', `프리패치 캐시 (${prefetchLRU.size}/${MAX_PREFETCH_CACHE}): [${prefetchLRU.entries().join(', ')}]`, '#607d8b');
     };
 
     tryPrefetch(idx - 1, '↑');
