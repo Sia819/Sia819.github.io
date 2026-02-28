@@ -10,6 +10,58 @@ interface HintState {
   direction: 'up' | 'down';
 }
 
+// ─── Debug: prefetch lifecycle tracker ───
+const DEBUG = process.env.NODE_ENV === 'development';
+
+const prefetchedPaths = new Set<string>();
+const navigationRequests = new Map<string, number>(); // path → request timestamp
+
+function debugLog(tag: string, msg: string, color: string = '#888') {
+  if (!DEBUG) return;
+  console.log(
+    `%c[Nav:${tag}]%c ${msg}`,
+    `color:${color};font-weight:bold`,
+    'color:inherit',
+  );
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes}B`;
+  return `${(bytes / 1024).toFixed(1)}KB`;
+}
+
+// RSC 페이로드 네트워크 크기 추적
+function initResourceObserver() {
+  if (!DEBUG || typeof window === 'undefined') return;
+
+  const observer = new PerformanceObserver((list) => {
+    for (const entry of list.getEntries()) {
+      const res = entry as PerformanceResourceTiming;
+      try {
+        const url = new URL(res.name);
+        // Next.js RSC 요청: _rsc 쿼리 파라미터가 있는 fetch
+        if (!url.searchParams.has('_rsc')) continue;
+
+        const path = url.pathname;
+        const size = res.transferSize;
+        const decoded = res.decodedBodySize;
+
+        debugLog(
+          '수신',
+          `${path} ← ${formatBytes(size)}${decoded !== size ? ` (압축 해제: ${formatBytes(decoded)})` : ''}`,
+          '#00bcd4',
+        );
+      } catch { /* ignore non-URL entries */ }
+    }
+  });
+
+  observer.observe({ type: 'resource', buffered: false });
+}
+
+// 모듈 로드 시 1회 실행
+if (typeof window !== 'undefined') initResourceObserver();
+// ─────────────────────────────────────────
+
 /**
  * 탭 네비게이션 + 콘텐츠 스크롤 휠 로직을 관리하는 훅.
  * usePathname() 기반으로 현재 탭을 판별하고, router.push()로 전환.
@@ -38,7 +90,18 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
     (tabId: string) => {
       if (isNavigating.current) return;
       isNavigating.current = true;
-      router.push(tabIdToPath(tabId));
+
+      const targetPath = tabIdToPath(tabId);
+      const wasPrefetched = prefetchedPaths.has(targetPath);
+      navigationRequests.set(targetPath, performance.now());
+
+      debugLog(
+        '전환',
+        `→ ${tabId} (${targetPath}) | 프리패치 ${wasPrefetched ? '✅ 캐시됨' : '❌ 없음 — cold load'}`,
+        wasPrefetched ? '#4caf50' : '#ff9800',
+      );
+
+      router.push(targetPath);
       // 네비게이션 후 잠시 뒤 플래그 해제
       setTimeout(() => {
         isNavigating.current = false;
@@ -49,6 +112,27 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
 
   // pathname 변경 시 스크롤 초기화 + 상태 리셋
   useEffect(() => {
+    // 렌더링 완료 시점 측정
+    const requestTime = navigationRequests.get(pathname);
+    const wasPrefetched = prefetchedPaths.has(pathname);
+
+    if (requestTime) {
+      const elapsed = (performance.now() - requestTime).toFixed(1);
+      debugLog(
+        '렌더',
+        `${pathname} 렌더 완료 (${elapsed}ms) | ${wasPrefetched ? '프리패치된 리소스 사용' : '사전 로드 없이 렌더링'}`,
+        wasPrefetched ? '#4caf50' : '#ff9800',
+      );
+      navigationRequests.delete(pathname);
+    } else {
+      // 직접 URL 접속 or 새로고침 (navigateTab을 거치지 않은 경우)
+      debugLog(
+        '초기',
+        `${pathname} 직접 로드 (SSG HTML에서 hydration)`,
+        '#2196f3',
+      );
+    }
+
     setHint(null);
     boundaryTime.current = 0;
     tabSwitchTime.current = Date.now();
@@ -62,12 +146,21 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
   // 인접 탭 프리패치
   useEffect(() => {
     const idx = allTabs.findIndex((t) => t.id === currentTabId);
-    if (idx > 0) {
-      router.prefetch(tabIdToPath(allTabs[idx - 1].id));
-    }
-    if (idx < allTabs.length - 1) {
-      router.prefetch(tabIdToPath(allTabs[idx + 1].id));
-    }
+
+    const tryPrefetch = (tabIdx: number, direction: string) => {
+      const tab = allTabs[tabIdx];
+      if (!tab) return;
+      const path = tabIdToPath(tab.id);
+      if (prefetchedPaths.has(path)) return;
+
+      debugLog('프리패치', `${path} 서버 요청 (${direction} ${tab.id})`, '#9c27b0');
+      router.prefetch(path);
+      prefetchedPaths.add(path);
+      debugLog('캐시', `프리패치된 리소스 목록: [${[...prefetchedPaths].join(', ')}]`, '#607d8b');
+    };
+
+    tryPrefetch(idx - 1, '↑');
+    tryPrefetch(idx + 1, '↓');
   }, [currentTabId, allTabs, router]);
 
   // 키보드 위/아래 화살표 → 탭 전환
@@ -113,9 +206,12 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
   );
 
   // 콘텐츠 내부에서 휠 → 직접 스크롤 + boundary 감지
-  const handleContentWheel = useCallback(
-    (e: React.WheelEvent) => {
-      const el = e.currentTarget as HTMLDivElement;
+  // 네이티브 addEventListener로 { passive: false } 지정 (React onWheel은 passive라 preventDefault 불가)
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+
+    const handler = (e: WheelEvent) => {
       const isScrollable = el.scrollHeight > el.clientHeight;
       if (!isScrollable) return;
 
@@ -161,18 +257,20 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
         clearTimeout(hintTimer.current);
         hintTimer.current = null;
       }
-      if (hint) setHint(null);
+      setHint((prev) => (prev ? null : prev));
       e.stopPropagation();
-    },
-    [currentTabId, allTabs, hint],
-  );
+    };
+
+    el.addEventListener('wheel', handler, { passive: false });
+    return () => el.removeEventListener('wheel', handler);
+  }, [currentTabId, allTabs]);
 
   return {
     currentTabId,
     hint,
     contentRef,
     handleOuterWheel,
-    handleContentWheel,
+    navigateTab,
   };
 };
 

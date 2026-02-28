@@ -83,6 +83,7 @@ interface TabButtonProps {
   tab: TabDef;
   activeTab: string;
   variant: 'desktop' | 'mobile';
+  onTabClick?: (tabId: string) => void;
 }
 
 const ACTIVE_SIZE = '32px';
@@ -91,7 +92,7 @@ const ACTIVE_MAX = '150px';
 const INACTIVE_MAX = '130px';
 const VERTICAL_WORD_SPACING = '-0.6em';
 
-const TabButton = ({ tab, activeTab, variant }: TabButtonProps) => {
+const TabButton = ({ tab, activeTab, variant, onTabClick }: TabButtonProps) => {
   const vertical = variant === 'desktop';
   const { isActive, buttonStyle, textClass, textColor } = getTabStyle(tab, activeTab);
   const linkRef = useRef<HTMLAnchorElement>(null);
@@ -132,6 +133,12 @@ const TabButton = ({ tab, activeTab, variant }: TabButtonProps) => {
       ref={linkRef}
       href={href}
       prefetch={false}
+      onClick={(e) => {
+        if (onTabClick) {
+          e.preventDefault();
+          onTabClick(tab.id);
+        }
+      }}
       title={!tab.icon && isTruncated ? tab.label : undefined}
       className={[
         'relative flex items-center justify-center shrink-0 overflow-hidden transition-all duration-150',
@@ -273,19 +280,20 @@ interface TabStripProps {
   activeTab: string;
   accentColor: string;
   variant: 'desktop' | 'mobile';
+  onTabClick?: (tabId: string) => void;
 }
 
-export const TabStrip = ({ activeTab, accentColor, variant }: TabStripProps) => {
+export const TabStrip = ({ activeTab, accentColor, variant, onTabClick }: TabStripProps) => {
   const vertical = variant === 'desktop';
 
   const tabList = (
     <>
-      <TabButton tab={HOME_TAB} activeTab={activeTab} variant={variant} />
+      <TabButton tab={HOME_TAB} activeTab={activeTab} variant={variant} onTabClick={onTabClick} />
       {CONTENT_TABS.map((tab) => (
-        <TabButton key={tab.id} tab={tab} activeTab={activeTab} variant={variant} />
+        <TabButton key={tab.id} tab={tab} activeTab={activeTab} variant={variant} onTabClick={onTabClick} />
       ))}
       <div className="flex-1" />
-      <TabButton tab={ABOUT_TAB} activeTab={activeTab} variant={variant} />
+      <TabButton tab={ABOUT_TAB} activeTab={activeTab} variant={variant} onTabClick={onTabClick} />
     </>
   );
 

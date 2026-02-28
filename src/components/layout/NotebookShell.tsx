@@ -17,7 +17,7 @@ const NotebookShell = ({ children }: NotebookShellProps) => {
     hint,
     contentRef,
     handleOuterWheel,
-    handleContentWheel,
+    navigateTab,
   } = useTabNavigation(ALL_TABS);
 
   const activeTabDef = ALL_TABS.find((t) => t.id === currentTabId) ?? ALL_TABS[0];
@@ -64,7 +64,7 @@ const NotebookShell = ({ children }: NotebookShellProps) => {
 
           {/* 모바일: 탭 스트립 */}
           <div className="min-w-0 md:hidden">
-            <TabStrip activeTab={currentTabId} accentColor={activeTabDef.color} variant="mobile" />
+            <TabStrip activeTab={currentTabId} accentColor={activeTabDef.color} variant="mobile" onTabClick={navigateTab} />
           </div>
 
           {/* 종이 콘텐츠 */}
@@ -74,7 +74,6 @@ const NotebookShell = ({ children }: NotebookShellProps) => {
           >
             <div
               ref={contentRef}
-              onWheel={handleContentWheel}
               className="notebook-content h-full overflow-y-auto py-8 pl-8 pr-4 mr-3 md:py-10 md:pl-10 md:pr-6 md:mr-4"
             >
               <div key={currentTabId} className="animate-content-in">
@@ -106,7 +105,7 @@ const NotebookShell = ({ children }: NotebookShellProps) => {
 
         {/* 데스크탑: 탭 스트립 */}
         <div className="hidden md:flex">
-          <TabStrip activeTab={currentTabId} accentColor={activeTabDef.color} variant="desktop" />
+          <TabStrip activeTab={currentTabId} accentColor={activeTabDef.color} variant="desktop" onTabClick={navigateTab} />
         </div>
       </div>
     </div>
