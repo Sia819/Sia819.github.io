@@ -1,9 +1,10 @@
 'use client';
 
 import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 
 const ThemeToggle = () => {
+  const maskId = useId();
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
 
@@ -14,8 +15,7 @@ const ThemeToggle = () => {
   if (!mounted) {
     return (
       <button
-        className="flex items-center justify-center rounded-full"
-        style={{ width: '40px', height: '40px' }}
+        className="flex h-10 w-10 items-center justify-center rounded-full"
         aria-label="Toggle Theme Placeholder"
       />
     );
@@ -30,10 +30,8 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="sidebar-btn relative flex items-center justify-center rounded-full"
+      className="sidebar-btn relative flex h-10 w-10 items-center justify-center rounded-full"
       style={{
-        width: '40px',
-        height: '40px',
         color: 'var(--sidebar-btn-text)',
         backgroundColor: 'var(--sidebar-btn-bg)',
       }}
@@ -54,7 +52,7 @@ const ThemeToggle = () => {
           transition: 'transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1)',
         }}
       >
-        <mask id="moon-mask">
+        <mask id={maskId}>
           {/* 전체를 보이게 하는 흰색 배경 */}
           <rect x="0" y="0" width="24" height="24" fill="white" />
           {/* 달의 그림자 부분을 투명하게 뚫어내는 검은색 원 */}
@@ -75,7 +73,7 @@ const ThemeToggle = () => {
           cy="12"
           r={isDark ? "8" : "5"}
           fill={isDark ? "currentColor" : "none"}
-          mask="url(#moon-mask)"
+          mask={`url(#${maskId})`}
           style={{
             transition: 'r 0.5s ease',
           }}
