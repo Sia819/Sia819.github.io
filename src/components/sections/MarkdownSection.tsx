@@ -230,7 +230,9 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
         <blockquote
           className="my-4 rounded-r-lg py-2 pr-4 pl-4"
           style={{
-            borderLeft: `3px solid ${accentColor}`,
+            borderLeftWidth: '3px',
+            borderLeftStyle: 'solid',
+            borderLeftColor: accentColor,
             backgroundColor: 'var(--blockquote-bg)',
           }}
         >

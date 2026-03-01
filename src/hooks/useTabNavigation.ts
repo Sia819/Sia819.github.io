@@ -101,7 +101,7 @@ function initResourceObserver() {
 }
 
 // 모듈 로드 시 1회 실행
-if (typeof window !== 'undefined') initResourceObserver();
+if (DEBUG && typeof window !== 'undefined') initResourceObserver();
 // ─────────────────────────────────────────
 
 /**

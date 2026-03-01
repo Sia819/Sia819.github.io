@@ -88,6 +88,7 @@ const INACTIVE_SIZE = '26px';
 const ACTIVE_MAX = '150px';
 const INACTIVE_MAX = '130px';
 const VERTICAL_WORD_SPACING = '-0.6em';
+const FADE_SIZE = 24;
 
 const TabButton = ({ tab, activeTab, variant, onTabClick }: TabButtonProps) => {
   const vertical = variant === 'desktop';
@@ -192,8 +193,6 @@ const TabButton = ({ tab, activeTab, variant, onTabClick }: TabButtonProps) => {
 /* ──────────────────────────────────────────────
  * 탭 스크롤 컨테이너
  * ────────────────────────────────────────────── */
-
-const FADE_SIZE = 24;
 
 interface TabScrollContainerProps {
   vertical: boolean;
