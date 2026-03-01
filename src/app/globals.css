@@ -284,6 +284,13 @@
   transition: box-shadow var(--theme-td) ease;
 }
 
+/* 반복되는 border shorthand — borderColor만 분리해야 @property 보간이 정상 작동 */
+.border-warm {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border-warm);
+}
+
 /* 탭 버튼: 레이아웃 전환 + 그림자 전환 (색상 전환은 @property가 :root에서 처리) */
 .tab-btn {
   transition:

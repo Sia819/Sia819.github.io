@@ -60,13 +60,10 @@ export default function ProfileSidebar() {
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="sidebar-btn block rounded px-3 py-1.5 text-center text-sm"
+            className="sidebar-btn border-warm block rounded px-3 py-1.5 text-center text-sm"
             style={{
               backgroundColor: 'var(--sidebar-btn-bg)',
               color: 'var(--sidebar-btn-text)',
-              borderWidth: '1px',
-              borderStyle: 'solid',
-              borderColor: 'var(--border-warm)',
             }}
           >
             {link.label}

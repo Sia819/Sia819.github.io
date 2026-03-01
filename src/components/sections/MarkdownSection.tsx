@@ -31,45 +31,30 @@ const CALLOUT_REGEX = /^\[!(NOTE|TIP|WARNING|IMPORTANT)\]\s*/;
 
 type CalloutType = 'NOTE' | 'TIP' | 'WARNING' | 'IMPORTANT';
 
+// heading factory — h1~h4의 반복 패턴 제거
+const createHeading = (
+  Tag: 'h1' | 'h2' | 'h3' | 'h4',
+  className: string,
+  fontSize: string,
+  fontWeight: number,
+): Components[typeof Tag] =>
+  ({ children, id }) => (
+    <Tag
+      id={id}
+      className={className}
+      style={{ color: 'var(--text-primary)', fontWeight, fontSize, lineHeight: 1.3 }}
+    >
+      {children}
+    </Tag>
+  );
+
 const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
   const components: Components = useMemo(() => ({
     // --- Headings (Notion 스타일) ---
-    h1: ({ children, id }) => (
-      <h1
-        id={id}
-        className="mt-2 mb-4 first:mt-0"
-        style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '1.875em', lineHeight: 1.3 }}
-      >
-        {children}
-      </h1>
-    ),
-    h2: ({ children, id }) => (
-      <h2
-        id={id}
-        className="mt-10 mb-4 first:mt-0"
-        style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '1.5em', lineHeight: 1.3 }}
-      >
-        {children}
-      </h2>
-    ),
-    h3: ({ children, id }) => (
-      <h3
-        id={id}
-        className="mt-6 mb-3"
-        style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '1.25em', lineHeight: 1.3 }}
-      >
-        {children}
-      </h3>
-    ),
-    h4: ({ children, id }) => (
-      <h4
-        id={id}
-        className="mt-4 mb-2"
-        style={{ color: 'var(--text-primary)', fontWeight: 600, fontSize: '1em', lineHeight: 1.3 }}
-      >
-        {children}
-      </h4>
-    ),
+    h1: createHeading('h1', 'mt-2 mb-4 first:mt-0', '1.875em', 700),
+    h2: createHeading('h2', 'mt-10 mb-4 first:mt-0', '1.5em', 600),
+    h3: createHeading('h3', 'mt-6 mb-3', '1.25em', 600),
+    h4: createHeading('h4', 'mt-4 mb-2', '1em', 600),
 
     // --- Text ---
     p: ({ children }) => (
@@ -180,13 +165,10 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
       // 인라인 코드
       return (
         <code
-          className="rounded-md px-1.5 py-0.5 text-[13px]"
+          className="border-warm rounded-md px-1.5 py-0.5 text-[13px]"
           style={{
             backgroundColor: 'var(--kraft-light)',
             color: 'var(--text-primary)',
-            borderWidth: '1px',
-            borderStyle: 'solid',
-            borderColor: 'var(--border-warm)',
           }}
         >
           {children}
@@ -244,10 +226,7 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
     // --- Table (GFM) ---
     table: ({ children }) => (
       <div className="my-4 overflow-x-auto">
-        <table
-          className="w-full rounded-lg text-[14px]"
-          style={{ borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border-warm)' }}
-        >
+        <table className="border-warm w-full rounded-lg text-[14px]">
           {children}
         </table>
       </div>
@@ -285,12 +264,9 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
     // --- Toggle (details/summary) ---
     details: ({ children, ...props }) => (
       <details
-        className="my-3 rounded-lg"
+        className="border-warm my-3 rounded-lg"
         style={{
           backgroundColor: 'var(--kraft-light)',
-          borderWidth: '1px',
-          borderStyle: 'solid',
-          borderColor: 'var(--border-warm)',
         }}
         {...props}
       >
@@ -312,8 +288,7 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
       <img
         src={src}
         alt={alt || ''}
-        className="my-4 max-w-full rounded-lg"
-        style={{ borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border-warm)' }}
+        className="border-warm my-4 max-w-full rounded-lg"
       />
     ),
   }), [accentColor]);
