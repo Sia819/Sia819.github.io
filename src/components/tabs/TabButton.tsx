@@ -11,9 +11,6 @@ import {
   type TabDef,
 } from '@/lib/tabs';
 
-// re-export for backward compatibility
-export { ALL_TABS, ALL_TAB_IDS, HOME_TAB, ABOUT_TAB, CONTENT_TABS, tabIdToPath, pathToTabId } from '@/lib/tabs';
-export type { TabDef } from '@/lib/tabs';
 
 /* ──────────────────────────────────────────────
  * 아이콘
@@ -201,11 +198,10 @@ const FADE_SIZE = 24;
 interface TabScrollContainerProps {
   vertical: boolean;
   size: string;
-  padding: number;
   children: React.ReactNode;
 }
 
-const TabScrollContainer = ({ vertical, size, padding, children }: TabScrollContainerProps) => {
+const TabScrollContainer = ({ vertical, size, children }: TabScrollContainerProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollStart, setCanScrollStart] = useState(false);
   const [canScrollEnd, setCanScrollEnd] = useState(false);
@@ -236,14 +232,12 @@ const TabScrollContainer = ({ vertical, size, padding, children }: TabScrollCont
   }, [vertical]);
 
   const scrollClass = vertical
-    ? `flex flex-col items-start gap-1 overflow-y-auto h-full py-${padding} tab-strip-scroll`
-    : `flex items-end gap-1 overflow-x-auto h-full px-${padding} tab-strip-scroll`;
+    ? 'flex flex-col items-start gap-1 overflow-y-auto h-full py-4 tab-strip-scroll'
+    : 'flex items-end gap-1 overflow-x-auto h-full px-4 tab-strip-scroll';
 
   const containerStyle = vertical
     ? { width: size }
     : { height: size, backgroundColor: 'var(--paper)' } as React.CSSProperties;
-
-  const scrollStyle: React.CSSProperties = { scrollbarWidth: 'none' };
 
   const startFade = vertical
     ? { top: 0, left: 0, right: 0, height: FADE_SIZE, background: 'linear-gradient(to bottom, var(--paper), transparent)' }
@@ -255,7 +249,7 @@ const TabScrollContainer = ({ vertical, size, padding, children }: TabScrollCont
 
   return (
     <div className="relative" style={containerStyle}>
-      <div ref={scrollRef} className={scrollClass} style={scrollStyle}>
+      <div ref={scrollRef} className={scrollClass}>
         {children}
       </div>
       {canScrollStart && (
@@ -274,7 +268,6 @@ const TabScrollContainer = ({ vertical, size, padding, children }: TabScrollCont
 
 const ACCENT_SIZE = '6px';
 const STRIP_SIZE = '44px';
-const STRIP_PADDING = 4;
 
 interface TabStripProps {
   activeTab: string;
@@ -311,7 +304,7 @@ export const TabStrip = ({ activeTab, accentColor, variant, onTabClick }: TabStr
     return (
       <>
         {accentLine}
-        <TabScrollContainer vertical size={STRIP_SIZE} padding={STRIP_PADDING}>
+        <TabScrollContainer vertical size={STRIP_SIZE}>
           {tabList}
         </TabScrollContainer>
       </>
@@ -320,7 +313,7 @@ export const TabStrip = ({ activeTab, accentColor, variant, onTabClick }: TabStr
 
   return (
     <>
-      <TabScrollContainer vertical={false} size={STRIP_SIZE} padding={STRIP_PADDING}>
+      <TabScrollContainer vertical={false} size={STRIP_SIZE}>
         {tabList}
       </TabScrollContainer>
       {accentLine}
