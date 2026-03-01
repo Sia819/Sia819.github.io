@@ -21,7 +21,6 @@ const NotebookShell = ({ children }: NotebookShellProps) => {
   } = useTabNavigation(ALL_TABS);
 
   const activeTabDef = ALL_TABS.find((t) => t.id === currentTabId) ?? ALL_TABS[0];
-  const showPaperLines = false;
 
   return (
     <div className="flex h-screen items-stretch justify-center">
@@ -71,7 +70,7 @@ const NotebookShell = ({ children }: NotebookShellProps) => {
 
           {/* 종이 콘텐츠 */}
           <div
-            className={`relative flex-1 overflow-hidden py-4 md:py-6 ${showPaperLines ? 'paper-lines' : ''}`}
+            className="relative flex-1 overflow-hidden py-4 md:py-6"
             style={{ backgroundColor: 'var(--paper)' }}
           >
             <div
