@@ -314,7 +314,7 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
         clearTimeout(hintTimer.current);
         hintTimer.current = null;
       }
-      setHint((prev) => (prev ? null : prev));
+      setHint(null);
       e.stopPropagation();
     };
 
