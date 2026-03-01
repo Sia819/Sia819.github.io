@@ -1,0 +1,2 @@
+# 자동 생성 파일은 LF로 고정 (빌드 스크립트가 LF로 생성하므로)
+src/generated/** eol=lf
