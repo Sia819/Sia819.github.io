@@ -4,14 +4,12 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import type { TabDef } from '@/lib/tabs';
 import { tabIdToPath, pathToTabId } from '@/lib/tabs';
+import { prefetchDebug } from './prefetch-debug';
 
 interface HintState {
   tab: TabDef;
   direction: 'up' | 'down';
 }
-
-// ─── Debug: prefetch lifecycle tracker ───
-const DEBUG = process.env.NODE_ENV === 'development';
 
 // LRU 프리패치 캐시 — Map 삽입 순서를 활용한 최소 구현
 const MAX_PREFETCH_CACHE = 10;
@@ -22,7 +20,7 @@ const prefetchLRU = {
     return prefetchCache.has(path);
   },
   /** 캐시에 추가. 이미 있으면 최신으로 갱신. 초과 시 가장 오래된 항목 제거. */
-  add(path: string, protectedPaths?: Set<string>): string | null {
+  add(path: string, protectedPaths?: Set<string>): void {
     // 이미 있으면 삭제 후 끝에 재삽입 (touch)
     if (prefetchCache.has(path)) {
       prefetchCache.delete(path);
@@ -30,22 +28,13 @@ const prefetchLRU = {
     prefetchCache.set(path, Date.now());
 
     // 초과 시 보호 대상이 아닌 가장 오래된 항목 제거
-    let evicted: string | null = null;
     if (prefetchCache.size > MAX_PREFETCH_CACHE) {
       for (const [oldest] of prefetchCache) {
         if (protectedPaths?.has(oldest)) continue;
         prefetchCache.delete(oldest);
-        evicted = oldest;
+        prefetchDebug.logEvict(oldest, prefetchCache.size, MAX_PREFETCH_CACHE);
         break;
       }
-    }
-    return evicted;
-  },
-  touch(path: string): void {
-    if (prefetchCache.has(path)) {
-      const ts = prefetchCache.get(path)!;
-      prefetchCache.delete(path);
-      prefetchCache.set(path, ts);
     }
   },
   entries(): string[] {
@@ -54,55 +43,14 @@ const prefetchLRU = {
   get size(): number {
     return prefetchCache.size;
   },
-};
-
-const navigationRequests = new Map<string, number>(); // path → request timestamp
-
-function debugLog(tag: string, msg: string, color: string = '#888') {
-  if (!DEBUG) return;
-  console.log(
-    `%c[Nav:${tag}]%c ${msg}`,
-    `color:${color};font-weight:bold`,
-    'color:inherit',
-  );
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${bytes}B`;
-  return `${(bytes / 1024).toFixed(1)}KB`;
-}
-
-// RSC 페이로드 네트워크 크기 추적
-function initResourceObserver() {
-  if (!DEBUG || typeof window === 'undefined') return;
-
-  const observer = new PerformanceObserver((list) => {
-    for (const entry of list.getEntries()) {
-      const res = entry as PerformanceResourceTiming;
-      try {
-        const url = new URL(res.name);
-        // Next.js RSC 요청: _rsc 쿼리 파라미터가 있는 fetch
-        if (!url.searchParams.has('_rsc')) continue;
-
-        const path = url.pathname;
-        const size = res.transferSize;
-        const decoded = res.decodedBodySize;
-
-        debugLog(
-          '수신',
-          `${path} ← ${formatBytes(size)}${decoded !== size ? ` (압축 해제: ${formatBytes(decoded)})` : ''}`,
-          '#00bcd4',
-        );
-      } catch { /* ignore non-URL entries */ }
+  touch(path: string): void {
+    if (prefetchCache.has(path)) {
+      const ts = prefetchCache.get(path)!;
+      prefetchCache.delete(path);
+      prefetchCache.set(path, ts);
     }
-  });
-
-  observer.observe({ type: 'resource', buffered: false });
-}
-
-// 모듈 로드 시 1회 실행
-if (DEBUG && typeof window !== 'undefined') initResourceObserver();
-// ─────────────────────────────────────────
+  },
+};
 
 /**
  * 탭 네비게이션 + 콘텐츠 스크롤 휠 로직을 관리하는 훅.
@@ -134,14 +82,7 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
       isNavigating.current = true;
 
       const targetPath = tabIdToPath(tabId);
-      const wasPrefetched = prefetchLRU.has(targetPath);
-      navigationRequests.set(targetPath, performance.now());
-
-      debugLog(
-        '전환',
-        `→ ${tabId} (${targetPath}) | 프리패치 ${wasPrefetched ? '✅ 캐시됨' : '❌ 없음 — cold load'}`,
-        wasPrefetched ? '#4caf50' : '#ff9800',
-      );
+      prefetchDebug.logNavigate(tabId, targetPath, prefetchLRU.has(targetPath));
 
       // 전환 대상을 LRU에서 최신으로 갱신 (eviction 방지)
       prefetchLRU.touch(targetPath);
@@ -157,27 +98,7 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
 
   // pathname 변경 시 스크롤 초기화 + 상태 리셋
   useEffect(() => {
-    // 렌더링 완료 시점 측정
-    const requestTime = navigationRequests.get(pathname);
-    const wasPrefetched = prefetchLRU.has(pathname);
-
-    if (requestTime) {
-      const elapsed = (performance.now() - requestTime).toFixed(1);
-      debugLog(
-        '렌더',
-        `${pathname} 렌더 완료 (${elapsed}ms) | ${wasPrefetched ? '프리패치된 리소스 사용' : '사전 로드 없이 렌더링'}`,
-        wasPrefetched ? '#4caf50' : '#ff9800',
-      );
-      navigationRequests.delete(pathname);
-    } else {
-      // 직접 URL 접속 or 새로고침 (navigateTab을 거치지 않은 경우)
-      debugLog(
-        '초기',
-        `${pathname} 직접 로드 (SSG HTML에서 hydration)`,
-        '#2196f3',
-      );
-    }
-
+    prefetchDebug.logRender(pathname, prefetchLRU.has(pathname));
     setHint(null);
     boundaryTime.current = 0;
     tabSwitchTime.current = Date.now();
@@ -207,13 +128,10 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
       const path = tabIdToPath(tab.id);
       if (prefetchLRU.has(path)) return;
 
-      debugLog('프리패치', `${path} 서버 요청 (${direction} ${tab.id})`, '#9c27b0');
+      prefetchDebug.logPrefetch(path, tab.id, direction);
       router.prefetch(path);
-      const evicted = prefetchLRU.add(path, protectedPaths);
-      if (evicted) {
-        debugLog('제거', `${evicted} 캐시에서 제거됨 (LRU ${prefetchLRU.size}/${MAX_PREFETCH_CACHE})`, '#e91e63');
-      }
-      debugLog('캐시', `프리패치 캐시 (${prefetchLRU.size}/${MAX_PREFETCH_CACHE}): [${prefetchLRU.entries().join(', ')}]`, '#607d8b');
+      prefetchLRU.add(path, protectedPaths);
+      prefetchDebug.logCacheState(prefetchLRU.entries(), prefetchLRU.size, MAX_PREFETCH_CACHE);
     };
 
     tryPrefetch(idx - 1, '↑');
