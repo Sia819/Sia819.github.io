@@ -70,7 +70,7 @@ const getTabStyle = (tab: TabDef, activeTab: string) => {
       opacity: isActive ? 1 : 0.7,
       boxShadow: isActive ? 'none' : 'var(--shadow-tab)',
     } as React.CSSProperties,
-    textClass: `text-sm transition-all duration-150 ${isActive ? 'font-bold' : 'font-normal'}`,
+    textClass: `text-sm ${isActive ? 'font-bold' : 'font-normal'}`,
     textColor: isActive ? 'var(--tab-text-active)' : 'var(--tab-text-inactive)',
   };
 };
@@ -141,7 +141,7 @@ const TabButton = ({ tab, activeTab, variant, onTabClick }: TabButtonProps) => {
       }}
       title={!tab.icon && isTruncated ? tab.label : undefined}
       className={[
-        'relative flex items-center justify-center shrink-0 overflow-hidden transition-all duration-150',
+        'relative flex items-center justify-center shrink-0 overflow-hidden tab-btn',
         vertical ? 'rounded-r-lg py-3' : 'rounded-t-lg px-3',
         tab.icon ? '' : textClass,
       ].join(' ')}
@@ -299,7 +299,7 @@ export const TabStrip = ({ activeTab, accentColor, variant, onTabClick }: TabStr
 
   const accentLine = (
     <div
-      className="shrink-0 transition-colors duration-200"
+      className="shrink-0"
       style={{
         backgroundColor: accentColor,
         ...(vertical ? { width: ACCENT_SIZE } : { height: ACCENT_SIZE }),

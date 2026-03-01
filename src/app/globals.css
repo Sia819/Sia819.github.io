@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 
 :root {
+  --theme-td: 0.2s; /* theme transition duration — 이 값 하나로 전체 테마 전환 속도 제어 */
   --paper: #fdfcfa;
   --paper-line: #f0ebe4;
   --kraft: #e8dece;
@@ -160,9 +161,32 @@
   --modal-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
 }
 
-/* 테마 전환 트랜지션 (글로벌 * 대신 주요 배경/텍스트 영역에만 적용하여 충돌 방지) */
-html, body, .notebook-content, aside, details, summary {
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, fill 0.2s ease;
+/* 테마 전환 트랜지션 — :root의 --theme-td 하나로 전체 속도 제어 */
+/* next-themes의 color-scheme 브라우저 자동 변경 차단 (이중 전환 방지) */
+html {
+  color-scheme: normal !important;
+}
+* {
+  transition:
+    background-color var(--theme-td) ease,
+    color var(--theme-td) ease,
+    border-color var(--theme-td) ease,
+    fill var(--theme-td) ease,
+    stroke var(--theme-td) ease,
+    box-shadow var(--theme-td) ease;
+}
+/* 탭 버튼: 레이아웃 전환(150ms) + 테마 색상 전환 합성 */
+.tab-btn {
+  transition:
+    width 150ms ease, height 150ms ease,
+    max-height 150ms ease, max-width 150ms ease,
+    opacity 150ms ease,
+    background-color var(--theme-td) ease,
+    color var(--theme-td) ease,
+    border-color var(--theme-td) ease,
+    fill var(--theme-td) ease,
+    stroke var(--theme-td) ease,
+    box-shadow var(--theme-td) ease;
 }
 
 @theme inline {

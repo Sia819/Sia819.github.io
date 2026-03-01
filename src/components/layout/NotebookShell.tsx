@@ -40,7 +40,7 @@ const NotebookShell = ({ children }: NotebookShellProps) => {
         <div
           className="relative hidden w-5 shrink-0 md:block"
           style={{
-            background: `linear-gradient(to right, var(--spine), var(--spine-light))`,
+            backgroundColor: 'var(--spine)',
           }}
         >
           {[0, 1, 2, 3, 4].map((i) => (
