@@ -238,6 +238,27 @@ details > *:not(summary) {
   margin-bottom: 0;
 }
 
+/* 사이드바 가죽 텍스처 오버레이 */
+.sidebar-texture {
+  position: relative;
+}
+.sidebar-texture > * {
+  position: relative;
+  z-index: 1;
+}
+.sidebar-texture::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: url('/leather-bump.png');
+  background-repeat: repeat;
+  background-size: 1152px 1152px;
+  mix-blend-mode: overlay;
+  opacity: 0.2;
+  pointer-events: none;
+}
+
 /* 탭 스트립 스크롤바 숨김 */
 .tab-strip-scroll {
   scrollbar-width: none;

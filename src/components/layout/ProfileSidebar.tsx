@@ -4,7 +4,7 @@ import { profile } from '@/data/profile';
 export default function ProfileSidebar() {
   return (
     <aside
-      className="hidden w-[260px] shrink-0 flex-col items-center px-6 py-10 md:flex"
+      className="sidebar-texture hidden w-[260px] shrink-0 flex-col items-center px-6 py-10 md:flex"
       style={{ backgroundColor: 'var(--kraft)' }}
     >
       <img
