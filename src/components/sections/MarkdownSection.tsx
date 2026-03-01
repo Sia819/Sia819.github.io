@@ -1,6 +1,6 @@
 'use client';
 
-import { Children, isValidElement, type ReactNode } from 'react';
+import { Children, isValidElement, useMemo, type ReactNode } from 'react';
 import Markdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -32,7 +32,7 @@ const CALLOUT_REGEX = /^\[!(NOTE|TIP|WARNING|IMPORTANT)\]\s*/;
 type CalloutType = 'NOTE' | 'TIP' | 'WARNING' | 'IMPORTANT';
 
 const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
-  const components: Components = {
+  const components: Components = useMemo(() => ({
     // --- Headings (Notion 스타일) ---
     h1: ({ children, id }) => (
       <h1
@@ -314,7 +314,7 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
         style={{ borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border-warm)' }}
       />
     ),
-  };
+  }), [accentColor]);
 
   return (
     <div>
