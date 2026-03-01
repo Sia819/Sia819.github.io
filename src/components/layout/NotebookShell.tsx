@@ -29,7 +29,7 @@ const NotebookShell = ({ children }: NotebookShellProps) => {
       {/* 노트북 전체 컨테이너 */}
       <div
         onWheel={handleOuterWheel}
-        className="relative flex w-full overflow-hidden xl:max-w-[1100px] xl:my-6 xl:rounded-md"
+        className="shadow-transition relative flex w-full overflow-hidden xl:max-w-[1100px] xl:my-6 xl:rounded-md"
         style={{ boxShadow: 'var(--shadow-notebook)' }}
       >
 
@@ -40,17 +40,19 @@ const NotebookShell = ({ children }: NotebookShellProps) => {
         <div
           className="relative hidden w-5 shrink-0 md:block"
           style={{
-            backgroundColor: 'var(--spine)',
+            background: 'linear-gradient(to right, var(--spine), var(--spine-light))',
           }}
         >
           {[0, 1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="absolute left-1/2 h-4 w-4 -translate-x-1/2 rounded-full"
+              className="shadow-transition absolute left-1/2 h-4 w-4 -translate-x-1/2 rounded-full"
               style={{
                 top: `${18 + i * 16}%`,
                 backgroundColor: 'var(--desk)',
-                border: '2px solid var(--spine)',
+                borderWidth: '2px',
+                borderStyle: 'solid',
+                borderColor: 'var(--spine)',
                 boxShadow: 'var(--shadow-binder-pin)',
               }}
             />
@@ -91,7 +93,9 @@ const NotebookShell = ({ children }: NotebookShellProps) => {
                   style={{
                     backgroundColor: 'var(--hint-bg)',
                     color: 'var(--hint-text)',
-                    border: '1px solid var(--hint-border)',
+                    borderWidth: '1px',
+                    borderStyle: 'solid',
+                    borderColor: 'var(--hint-border)',
                   }}
                 >
                   {hint.direction === 'down'

@@ -184,7 +184,9 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
           style={{
             backgroundColor: 'var(--kraft-light)',
             color: 'var(--text-primary)',
-            border: '1px solid var(--border-warm)',
+            borderWidth: '1px',
+            borderStyle: 'solid',
+            borderColor: 'var(--border-warm)',
           }}
         >
           {children}
@@ -242,7 +244,7 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
       <div className="my-4 overflow-x-auto">
         <table
           className="w-full rounded-lg text-[14px]"
-          style={{ border: '1px solid var(--border-warm)' }}
+          style={{ borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border-warm)' }}
         >
           {children}
         </table>
@@ -256,7 +258,9 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
         className="px-4 py-2.5 text-left text-xs font-semibold uppercase tracking-wider"
         style={{
           color: 'var(--text-muted)',
-          borderBottom: '2px solid var(--border-warm)',
+          borderBottomWidth: '2px',
+          borderBottomStyle: 'solid',
+          borderBottomColor: 'var(--border-warm)',
         }}
       >
         {children}
@@ -267,7 +271,9 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
         className="px-4 py-2.5 text-[14px]"
         style={{
           color: 'var(--text-secondary)',
-          borderBottom: '1px solid var(--border-warm)',
+          borderBottomWidth: '1px',
+          borderBottomStyle: 'solid',
+          borderBottomColor: 'var(--border-warm)',
         }}
       >
         {children}
@@ -280,7 +286,9 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
         className="my-3 rounded-lg"
         style={{
           backgroundColor: 'var(--kraft-light)',
-          border: '1px solid var(--border-warm)',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: 'var(--border-warm)',
         }}
         {...props}
       >
@@ -303,7 +311,7 @@ const MarkdownSection = ({ content, accentColor }: MarkdownSectionProps) => {
         src={src}
         alt={alt || ''}
         className="my-4 max-w-full rounded-lg"
-        style={{ border: '1px solid var(--border-warm)' }}
+        style={{ borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border-warm)' }}
       />
     ),
   };

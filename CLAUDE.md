@@ -144,6 +144,15 @@ npm run format   # Prettier 포매팅
 - `main` 브랜치에 push/merge 시 GitHub Actions가 자동으로 빌드 & GitHub Pages 배포
 - `next.config.ts`에서 `output: 'export'` 설정 필수
 
+## 테마 전환 트랜지션 규칙
+
+테마 색상 전환은 CSS Houdini `@property`로 `:root`에서 CSS 변수 자체를 보간한다. 개별 요소에는 색상 관련 `transition`을 설정하지 않는다.
+
+- 새 색상 변수 추가 시: `globals.css`에 `@property` 등록 → `:root` transition 목록에 추가
+- `var(--…)`로 색상을 지정한 요소에 색상 관련 CSS `transition` 금지 (Tailwind `transition-colors`, `transition-all` 포함). `:root`의 `@property`가 이미 색상을 부드럽게 전환하고 있는데, 요소에도 색상 transition이 있으면 전환이 두 번 겹쳐서 색이 이상하게 바뀐다
+- `border`를 인라인 스타일로 쓸 때, `border: '1px solid var(--…)'`처럼 한 줄에 쓰면 안 된다. 이렇게 하면 변수 값이 바뀔 때 부드럽게 전환되지 않고 톡 끊겨서 바뀐다. 대신 `borderWidth`, `borderStyle`, `borderColor`로 나눠서 써야 한다
+- 요소 레벨 `transition`은 레이아웃 속성(`width`, `opacity`, `transform` 등)에만 사용
+
 ## 작업 시 주의사항
 
 - 기존 파일을 수정할 때는 반드시 먼저 Read로 읽어본 후 변경

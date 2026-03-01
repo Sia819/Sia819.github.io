@@ -11,7 +11,7 @@ export default function ProfileSidebar() {
         src={profile.avatar}
         alt={profile.name}
         className="mb-5 h-28 w-28 rounded-full object-cover"
-        style={{ border: '3px solid var(--kraft-light)' }}
+        style={{ borderWidth: '3px', borderStyle: 'solid', borderColor: 'var(--kraft-light)' }}
       />
       <h1
         className="mb-1 text-center text-xl font-bold"
@@ -33,7 +33,7 @@ export default function ProfileSidebar() {
       </p>
       <div
         className="mb-6 w-full"
-        style={{ borderTop: '1px solid var(--kraft-dark)' }}
+        style={{ borderTopWidth: '1px', borderTopStyle: 'solid', borderTopColor: 'var(--kraft-dark)' }}
       />
       <div className="mb-6 flex w-full flex-col gap-2 text-sm">
         <div className="flex items-center gap-2">
@@ -60,17 +60,13 @@ export default function ProfileSidebar() {
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="block rounded px-3 py-1.5 text-center text-sm transition-colors"
+            className="sidebar-btn block rounded px-3 py-1.5 text-center text-sm"
             style={{
               backgroundColor: 'var(--sidebar-btn-bg)',
               color: 'var(--sidebar-btn-text)',
-              border: '1px solid var(--border-warm)',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--sidebar-btn-hover)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--sidebar-btn-bg)';
+              borderWidth: '1px',
+              borderStyle: 'solid',
+              borderColor: 'var(--border-warm)',
             }}
           >
             {link.label}

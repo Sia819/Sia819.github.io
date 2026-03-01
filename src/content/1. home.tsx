@@ -20,7 +20,7 @@ const HomeContent = ({ accentColor }: HomeContentProps) => {
           src={profile.avatar}
           alt={profile.name}
           className="h-32 w-32 rounded-full object-cover"
-          style={{ border: '3px solid var(--kraft-dark)' }}
+          style={{ borderWidth: '3px', borderStyle: 'solid', borderColor: 'var(--kraft-dark)' }}
         />
 
         {/* 이름 */}

@@ -40,7 +40,7 @@ const CodeBlock = ({ code, language }: CodeBlockProps) => {
   };
 
   return (
-    <div className="my-4 overflow-hidden rounded-lg" style={{ border: '1px solid var(--border-warm)' }}>
+    <div className="my-4 overflow-hidden rounded-lg" style={{ borderWidth: '1px', borderStyle: 'solid', borderColor: 'var(--border-warm)' }}>
       {/* 상단 바: 언어 라벨 + 복사 버튼 */}
       <div
         className="flex items-center justify-between px-4 py-2 text-xs"
@@ -49,7 +49,7 @@ const CodeBlock = ({ code, language }: CodeBlockProps) => {
         <span className="font-medium uppercase tracking-wider">{language || 'text'}</span>
         <button
           onClick={handleCopy}
-          className="flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors hover:opacity-80"
+          className="flex items-center gap-1 rounded px-2 py-1 text-xs hover:opacity-80"
           style={{ color: 'var(--text-muted)' }}
         >
           {copied ? (

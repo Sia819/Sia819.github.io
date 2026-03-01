@@ -70,7 +70,9 @@ const Callout = ({ type, children }: CalloutProps) => {
       className="callout-content my-4 flex gap-3 rounded-lg p-4"
       style={{
         backgroundColor: config.bg,
-        borderLeft: `3px solid ${config.border}`,
+        borderLeftWidth: '3px',
+        borderLeftStyle: 'solid',
+        borderLeftColor: config.border,
       }}
     >
       <div className="mt-0.5 shrink-0" style={{ color: config.iconColor }}>

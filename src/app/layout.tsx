@@ -38,7 +38,7 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${geistMono.variable} antialiased`}
       >
-        <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem>
+        <ThemeProvider attribute="data-theme" defaultTheme="system" enableSystem enableColorScheme={false}>
           <NotebookShell>
             {children}
           </NotebookShell>

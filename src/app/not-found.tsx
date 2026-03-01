@@ -17,7 +17,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="mt-4 rounded-lg px-6 py-2 text-sm transition-colors"
+        className="mt-4 rounded-lg px-6 py-2 text-sm"
         style={{
           backgroundColor: 'var(--kraft-dark)',
           color: 'var(--kraft-light)',

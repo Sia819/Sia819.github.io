@@ -14,7 +14,7 @@ const ThemeToggle = () => {
   if (!mounted) {
     return (
       <button
-        className="flex items-center justify-center rounded-full transition-colors"
+        className="flex items-center justify-center rounded-full"
         style={{ width: '40px', height: '40px' }}
         aria-label="Toggle Theme Placeholder"
       />
@@ -30,18 +30,12 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="relative flex items-center justify-center rounded-full transition-colors duration-300"
+      className="sidebar-btn relative flex items-center justify-center rounded-full"
       style={{
         width: '40px',
         height: '40px',
         color: 'var(--sidebar-btn-text)',
         backgroundColor: 'var(--sidebar-btn-bg)',
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.backgroundColor = 'var(--sidebar-btn-hover)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = 'var(--sidebar-btn-bg)';
       }}
       aria-label="Toggle Theme"
       title={`Switch to ${isDark ? 'light' : 'dark'} mode`}

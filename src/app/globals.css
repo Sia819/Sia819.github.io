@@ -1,7 +1,120 @@
 @import 'tailwindcss';
 
+/* ===== @property 등록 — CSS 변수 자체를 트랜지션 가능하게 함 ===== */
+@property --paper { syntax: '<color>'; inherits: true; initial-value: #fdfcfa; }
+@property --paper-line { syntax: '<color>'; inherits: true; initial-value: #f0ebe4; }
+@property --kraft { syntax: '<color>'; inherits: true; initial-value: #e8dece; }
+@property --kraft-light { syntax: '<color>'; inherits: true; initial-value: #f2ebe0; }
+@property --kraft-dark { syntax: '<color>'; inherits: true; initial-value: #c8b99e; }
+@property --spine { syntax: '<color>'; inherits: true; initial-value: #a09484; }
+@property --spine-light { syntax: '<color>'; inherits: true; initial-value: #b0a494; }
+@property --desk { syntax: '<color>'; inherits: true; initial-value: #f2ece3; }
+@property --text-primary { syntax: '<color>'; inherits: true; initial-value: #1c1712; }
+@property --text-secondary { syntax: '<color>'; inherits: true; initial-value: #3e352a; }
+@property --text-muted { syntax: '<color>'; inherits: true; initial-value: #6b5e50; }
+@property --border-warm { syntax: '<color>'; inherits: true; initial-value: #e8e2d8; }
+@property --sidebar-name { syntax: '<color>'; inherits: true; initial-value: #1c1712; }
+@property --sidebar-text { syntax: '<color>'; inherits: true; initial-value: #3a3024; }
+@property --sidebar-muted { syntax: '<color>'; inherits: true; initial-value: #5c5040; }
+@property --sidebar-btn-bg { syntax: '<color>'; inherits: true; initial-value: #c8b99e; }
+@property --sidebar-btn-text { syntax: '<color>'; inherits: true; initial-value: #f2ebe0; }
+@property --sidebar-btn-hover { syntax: '<color>'; inherits: true; initial-value: #a09484; }
+@property --accent { syntax: '<color>'; inherits: true; initial-value: #c48a20; }
+@property --tab-home { syntax: '<color>'; inherits: true; initial-value: #7a9ec4; }
+@property --tab-about { syntax: '<color>'; inherits: true; initial-value: #8a8a8a; }
+@property --tab-palette-1 { syntax: '<color>'; inherits: true; initial-value: #88b468; }
+@property --tab-palette-2 { syntax: '<color>'; inherits: true; initial-value: #e8a04c; }
+@property --tab-palette-3 { syntax: '<color>'; inherits: true; initial-value: #d4726a; }
+@property --tab-palette-4 { syntax: '<color>'; inherits: true; initial-value: #e4b84c; }
+@property --tab-palette-5 { syntax: '<color>'; inherits: true; initial-value: #6cb496; }
+@property --code-bg { syntax: '<color>'; inherits: true; initial-value: #faf6f0; }
+@property --code-text { syntax: '<color>'; inherits: true; initial-value: #3e352a; }
+@property --code-comment { syntax: '<color>'; inherits: true; initial-value: #9a8d7f; }
+@property --code-string { syntax: '<color>'; inherits: true; initial-value: #7a9a5a; }
+@property --code-punctuation { syntax: '<color>'; inherits: true; initial-value: #6b5e50; }
+@property --code-number { syntax: '<color>'; inherits: true; initial-value: #c48a20; }
+@property --code-keyword { syntax: '<color>'; inherits: true; initial-value: #9a6434; }
+@property --code-function { syntax: '<color>'; inherits: true; initial-value: #b85c3a; }
+@property --code-class { syntax: '<color>'; inherits: true; initial-value: #c48a20; }
+@property --code-builtin { syntax: '<color>'; inherits: true; initial-value: #6a9a8a; }
+@property --tab-text-active { syntax: '<color>'; inherits: true; initial-value: #101010; }
+@property --tab-text-inactive { syntax: '<color>'; inherits: true; initial-value: #faf5eb; }
+@property --hint-bg { syntax: '<color>'; inherits: true; initial-value: #e8f1fa; }
+@property --hint-text { syntax: '<color>'; inherits: true; initial-value: #5a7fa0; }
+@property --hint-border { syntax: '<color>'; inherits: true; initial-value: #c4d8ec; }
+@property --callout-note-border { syntax: '<color>'; inherits: true; initial-value: #7a9ec4; }
+@property --callout-tip-border { syntax: '<color>'; inherits: true; initial-value: #6cb496; }
+@property --callout-warning-border { syntax: '<color>'; inherits: true; initial-value: #e8a04c; }
+@property --callout-important-border { syntax: '<color>'; inherits: true; initial-value: #d4726a; }
+@property --hr-color { syntax: '<color>'; inherits: true; initial-value: #b0a8a0; }
+@property --scrollbar-track { syntax: '<color>'; inherits: true; initial-value: #e8e2d8; }
+@property --scrollbar-thumb { syntax: '<color>'; inherits: true; initial-value: #c8b99e; }
+@property --scrollbar-thumb-hover { syntax: '<color>'; inherits: true; initial-value: #a09484; }
+@property --callout-note-bg { syntax: '<color>'; inherits: true; initial-value: rgba(122, 158, 196, 0.1); }
+@property --callout-tip-bg { syntax: '<color>'; inherits: true; initial-value: rgba(108, 180, 150, 0.1); }
+@property --callout-warning-bg { syntax: '<color>'; inherits: true; initial-value: rgba(232, 160, 76, 0.1); }
+@property --callout-important-bg { syntax: '<color>'; inherits: true; initial-value: rgba(212, 114, 106, 0.1); }
+@property --blockquote-bg { syntax: '<color>'; inherits: true; initial-value: rgba(196, 138, 32, 0.06); }
+@property --modal-bg { syntax: '<color>'; inherits: true; initial-value: rgba(0, 0, 0, 0.7); }
+
 :root {
   --theme-td: 0.2s; /* theme transition duration — 이 값 하나로 전체 테마 전환 속도 제어 */
+  transition:
+    --paper var(--theme-td) ease,
+    --paper-line var(--theme-td) ease,
+    --kraft var(--theme-td) ease,
+    --kraft-light var(--theme-td) ease,
+    --kraft-dark var(--theme-td) ease,
+    --spine var(--theme-td) ease,
+    --spine-light var(--theme-td) ease,
+    --desk var(--theme-td) ease,
+    --text-primary var(--theme-td) ease,
+    --text-secondary var(--theme-td) ease,
+    --text-muted var(--theme-td) ease,
+    --border-warm var(--theme-td) ease,
+    --sidebar-name var(--theme-td) ease,
+    --sidebar-text var(--theme-td) ease,
+    --sidebar-muted var(--theme-td) ease,
+    --sidebar-btn-bg var(--theme-td) ease,
+    --sidebar-btn-text var(--theme-td) ease,
+    --sidebar-btn-hover var(--theme-td) ease,
+    --accent var(--theme-td) ease,
+    --tab-home var(--theme-td) ease,
+    --tab-about var(--theme-td) ease,
+    --tab-palette-1 var(--theme-td) ease,
+    --tab-palette-2 var(--theme-td) ease,
+    --tab-palette-3 var(--theme-td) ease,
+    --tab-palette-4 var(--theme-td) ease,
+    --tab-palette-5 var(--theme-td) ease,
+    --code-bg var(--theme-td) ease,
+    --code-text var(--theme-td) ease,
+    --code-comment var(--theme-td) ease,
+    --code-string var(--theme-td) ease,
+    --code-punctuation var(--theme-td) ease,
+    --code-number var(--theme-td) ease,
+    --code-keyword var(--theme-td) ease,
+    --code-function var(--theme-td) ease,
+    --code-class var(--theme-td) ease,
+    --code-builtin var(--theme-td) ease,
+    --tab-text-active var(--theme-td) ease,
+    --tab-text-inactive var(--theme-td) ease,
+    --hint-bg var(--theme-td) ease,
+    --hint-text var(--theme-td) ease,
+    --hint-border var(--theme-td) ease,
+    --callout-note-bg var(--theme-td) ease,
+    --callout-note-border var(--theme-td) ease,
+    --callout-tip-bg var(--theme-td) ease,
+    --callout-tip-border var(--theme-td) ease,
+    --callout-warning-bg var(--theme-td) ease,
+    --callout-warning-border var(--theme-td) ease,
+    --callout-important-bg var(--theme-td) ease,
+    --callout-important-border var(--theme-td) ease,
+    --hr-color var(--theme-td) ease,
+    --blockquote-bg var(--theme-td) ease,
+    --scrollbar-track var(--theme-td) ease,
+    --scrollbar-thumb var(--theme-td) ease,
+    --scrollbar-thumb-hover var(--theme-td) ease,
+    --modal-bg var(--theme-td) ease;
   --paper: #fdfcfa;
   --paper-line: #f0ebe4;
   --kraft: #e8dece;
@@ -17,9 +130,9 @@
   --sidebar-name: #1c1712;
   --sidebar-text: #3a3024;
   --sidebar-muted: #5c5040;
-  --sidebar-btn-bg: var(--kraft-dark);
-  --sidebar-btn-text: var(--kraft-light);
-  --sidebar-btn-hover: var(--spine);
+  --sidebar-btn-bg: #c8b99e;
+  --sidebar-btn-text: #f2ebe0;
+  --sidebar-btn-hover: #a09484;
   --accent: #c48a20;
 
   --tab-home: #7a9ec4;
@@ -73,9 +186,9 @@
   --shadow-tab: 1px 1px 3px rgba(0,0,0,0.1);
 
   /* 스크롤바 */
-  --scrollbar-track: var(--border-warm);
-  --scrollbar-thumb: var(--kraft-dark);
-  --scrollbar-thumb-hover: var(--spine);
+  --scrollbar-track: #e8e2d8;
+  --scrollbar-thumb: #c8b99e;
+  --scrollbar-thumb-hover: #a09484;
 
   /* 모달 */
   --modal-bg: rgba(0, 0, 0, 0.7);
@@ -161,32 +274,23 @@
   --modal-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
 }
 
-/* 테마 전환 트랜지션 — :root의 --theme-td 하나로 전체 속도 제어 */
-/* next-themes의 color-scheme 브라우저 자동 변경 차단 (이중 전환 방지) */
-html {
-  color-scheme: normal !important;
+/* 사이드바 버튼: hover만 개별 처리 (테마 색상 전환은 @property가 :root에서 처리) */
+.sidebar-btn:hover {
+  background-color: var(--sidebar-btn-hover) !important;
 }
-* {
-  transition:
-    background-color var(--theme-td) ease,
-    color var(--theme-td) ease,
-    border-color var(--theme-td) ease,
-    fill var(--theme-td) ease,
-    stroke var(--theme-td) ease,
-    box-shadow var(--theme-td) ease;
+
+/* 그림자 전환: @property로 등록 불가능한 box-shadow는 요소 레벨에서 개별 처리 */
+.shadow-transition {
+  transition: box-shadow var(--theme-td) ease;
 }
-/* 탭 버튼: 레이아웃 전환(150ms) + 테마 색상 전환 합성 */
+
+/* 탭 버튼: 레이아웃 전환 + 그림자 전환 (색상 전환은 @property가 :root에서 처리) */
 .tab-btn {
   transition:
     width 150ms ease, height 150ms ease,
     max-height 150ms ease, max-width 150ms ease,
-    opacity 150ms ease,
-    background-color var(--theme-td) ease,
-    color var(--theme-td) ease,
-    border-color var(--theme-td) ease,
-    fill var(--theme-td) ease,
-    stroke var(--theme-td) ease,
-    box-shadow var(--theme-td) ease;
+    box-shadow var(--theme-td) ease,
+    opacity 150ms ease;
 }
 
 @theme inline {
