@@ -6,6 +6,7 @@ import useTabNavigation from '@/hooks/useTabNavigation';
 import ProfileSidebar from '@/components/layout/ProfileSidebar';
 import ProfileMobile from '@/components/layout/ProfileMobile';
 import HashRedirect from '@/components/common/HashRedirect';
+import ScrollDownHint from '@/components/common/ScrollDownHint';
 
 interface NotebookShellProps {
   children: React.ReactNode;
@@ -81,6 +82,11 @@ const NotebookShell = ({ children }: NotebookShellProps) => {
                 {children}
               </div>
             </div>
+
+            {/* 첫 방문 스크롤 다운 힌트 */}
+            {currentTabId === 'home' && (
+              <ScrollDownHint scrollRef={contentRef} />
+            )}
 
             {/* 스크롤 끝 힌트 */}
             {hint && (

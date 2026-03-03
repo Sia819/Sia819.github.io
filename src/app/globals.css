@@ -421,3 +421,35 @@ details > *:not(summary) {
 .animate-content-in {
   animation: content-in 0.15s ease-out;
 }
+
+/* 스크롤 다운 힌트 */
+@keyframes scroll-wheel-move {
+  0%   { opacity: 0; transform: translateY(0); }
+  20%  { opacity: 0.8; }
+  80%  { opacity: 0.8; }
+  100% { opacity: 0; transform: translateY(8px); }
+}
+@keyframes scroll-hint-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 0.7; transform: translateY(0); }
+}
+@keyframes scroll-hint-exit {
+  from { opacity: 0.7; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(10px); }
+}
+@keyframes scroll-chevron-bounce {
+  0%, 100% { opacity: 0.3; transform: translateY(0); }
+  50%      { opacity: 0.6; transform: translateY(3px); }
+}
+.scroll-hint-in {
+  animation: scroll-hint-enter 0.5s ease-out forwards;
+}
+.scroll-hint-out {
+  animation: scroll-hint-exit 0.4s ease-in forwards;
+}
+.scroll-wheel {
+  animation: scroll-wheel-move 1.8s ease-in-out infinite;
+}
+.scroll-chevron {
+  animation: scroll-chevron-bounce 1.8s ease-in-out infinite;
+}
