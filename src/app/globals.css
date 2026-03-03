@@ -456,18 +456,18 @@ details > *:not(summary) {
 
 /* 모바일 스와이프 힌트 */
 @keyframes swipe-dot-move {
-  0%   { opacity: 0; transform: translateX(-8px); }
-  20%  { opacity: 0.8; }
-  80%  { opacity: 0.8; }
-  100% { opacity: 0; transform: translateX(8px); }
+  0%   { opacity: 0; transform: translateX(-10px); }
+  20%  { opacity: 0.8; transform: translateX(-6px); }
+  80%  { opacity: 0.8; transform: translateX(6px); }
+  100% { opacity: 0; transform: translateX(10px); }
 }
 @keyframes swipe-chevron-bounce-left {
   0%, 100% { opacity: 0.3; transform: translateX(0); }
-  50%      { opacity: 0.6; transform: translateX(-2px); }
+  50%      { opacity: 0.8; transform: translateX(-3px); }
 }
 @keyframes swipe-chevron-bounce-right {
   0%, 100% { opacity: 0.3; transform: translateX(0); }
-  50%      { opacity: 0.6; transform: translateX(2px); }
+  50%      { opacity: 0.8; transform: translateX(3px); }
 }
 .swipe-dot {
   animation: swipe-dot-move 1.8s ease-in-out infinite;
