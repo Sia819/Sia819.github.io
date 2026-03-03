@@ -11,16 +11,16 @@ export const SwipeTrackIcon = ({ className = '', children, ...props }: React.SVG
       style={{ color: 'var(--text-muted)' }}
       {...props}
     >
-      {/* 슬림하고 모던한 스와이프 트랙 */}
-      <rect
-        x="2"
-        y="4"
-        width="36"
-        height="12"
-        rx="6"
+      {/* 초슬림 라인 트랙 */}
+      <line
+        x1="4"
+        y1="10"
+        x2="36"
+        y2="10"
         stroke="currentColor"
-        strokeWidth="2"
-        opacity="0.4"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        opacity="0.3"
       />
     </svg>
     {children}

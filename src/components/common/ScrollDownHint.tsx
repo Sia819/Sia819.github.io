@@ -53,34 +53,36 @@ const ScrollDownHint = ({ scrollRef }: ScrollDownHintProps) => {
       }}
     >
       {/* 데스크탑: 마우스 아이콘 + 스크롤 휠 애니메이션 */}
-      <div className="hidden md:flex flex-col items-center gap-1">
+      <div className="hidden md:flex flex-col items-center gap-1 opacity-80">
         <MouseIcon>
           <div
             className="scroll-wheel absolute rounded-full"
             style={{
-              width: 4,
+              width: 2.5,
               height: 6,
-              top: 8,
-              left: 10,
+              top: 7,
+              left: 10.75,
               backgroundColor: 'var(--text-muted)',
+              boxShadow: '0 0 2px var(--text-muted)'
             }}
           />
         </MouseIcon>
-        <ChevronIcon direction="down" className="scroll-chevron mt-0.5" />
+        <ChevronIcon direction="down" className="scroll-chevron mt-1" />
       </div>
 
       {/* 모바일: 스와이프 힌트 */}
-      <div className="flex md:hidden items-center gap-2">
+      <div className="flex md:hidden items-center gap-3 opacity-80">
         <ChevronIcon direction="left" className="swipe-chevron-left" />
         <SwipeTrackIcon>
           <div
             className="swipe-dot absolute rounded-full"
             style={{
-              width: 6,
-              height: 6,
-              top: 7,
-              left: 17,
+              width: 5,
+              height: 5,
+              top: 7.5,
+              left: 17.5,
               backgroundColor: 'var(--text-muted)',
+              boxShadow: '0 0 3px var(--text-muted)'
             }}
           />
         </SwipeTrackIcon>

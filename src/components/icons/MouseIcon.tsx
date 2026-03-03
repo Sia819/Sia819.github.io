@@ -11,16 +11,16 @@ export const MouseIcon = ({ className = '', children, ...props }: React.SVGProps
       style={{ color: 'var(--text-muted)' }}
       {...props}
     >
-      {/* 둥글고 날렵한 마우스 외곽선 */}
+      {/* 슬림하고 모던한 마우스 외곽선 */}
       <rect
-        x="2"
+        x="3"
         y="2"
-        width="20"
+        width="18"
         height="32"
-        rx="10"
+        rx="9"
         stroke="currentColor"
-        strokeWidth="2"
-        opacity="0.6"
+        strokeWidth="1.5"
+        opacity="0.5"
       />
     </svg>
     {children}

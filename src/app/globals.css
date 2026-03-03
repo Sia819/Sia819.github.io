@@ -422,59 +422,61 @@ details > *:not(summary) {
   animation: content-in 0.15s ease-out;
 }
 
-/* 스크롤 다운 힌트 */
+/* 스크롤 다운 힌트 모던 애니메이션 */
 @keyframes scroll-wheel-move {
-  0%   { opacity: 0; transform: translateY(0); }
-  20%  { opacity: 0.8; }
-  80%  { opacity: 0.8; }
-  100% { opacity: 0; transform: translateY(8px); }
+  0%   { opacity: 0; transform: translateY(-4px) scaleY(0.7); }
+  25%  { opacity: 1; transform: translateY(0) scaleY(1); }
+  50%  { opacity: 1; transform: translateY(6px) scaleY(1); }
+  75%  { opacity: 0; transform: translateY(10px) scaleY(0.6); }
+  100% { opacity: 0; transform: translateY(10px); }
 }
 @keyframes scroll-hint-enter {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 0.7; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes scroll-hint-exit {
-  from { opacity: 0.7; transform: translateY(0); }
-  to   { opacity: 0; transform: translateY(10px); }
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(12px); }
 }
 @keyframes scroll-chevron-bounce {
-  0%, 100% { opacity: 0.3; transform: translateY(0); }
-  50%      { opacity: 0.6; transform: translateY(3px); }
+  0%, 100% { opacity: 0.1; transform: translateY(-3px); }
+  50%      { opacity: 0.9; transform: translateY(3px); }
 }
 .scroll-hint-in {
-  animation: scroll-hint-enter 0.5s ease-out forwards;
+  animation: scroll-hint-enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .scroll-hint-out {
-  animation: scroll-hint-exit 0.4s ease-in forwards;
+  animation: scroll-hint-exit 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 .scroll-wheel {
-  animation: scroll-wheel-move 1.8s ease-in-out infinite;
+  animation: scroll-wheel-move 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 .scroll-chevron {
-  animation: scroll-chevron-bounce 1.8s ease-in-out infinite;
+  animation: scroll-chevron-bounce 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-/* 모바일 스와이프 힌트 */
+/* 모바일 스와이프 힌트 모던 애니메이션 */
 @keyframes swipe-dot-move {
-  0%   { opacity: 0; transform: translateX(-10px); }
-  20%  { opacity: 0.8; transform: translateX(-6px); }
-  80%  { opacity: 0.8; transform: translateX(6px); }
-  100% { opacity: 0; transform: translateX(10px); }
+  0%   { opacity: 0; transform: translateX(-14px) scale(0.6); }
+  20%  { opacity: 1; transform: translateX(-8px) scale(1.1); }
+  50%  { opacity: 1; transform: translateX(8px) scale(1.1); }
+  70%  { opacity: 0; transform: translateX(14px) scale(0.6); }
+  100% { opacity: 0; transform: translateX(14px); }
 }
 @keyframes swipe-chevron-bounce-left {
-  0%, 100% { opacity: 0.3; transform: translateX(0); }
-  50%      { opacity: 0.8; transform: translateX(-3px); }
+  0%, 100% { opacity: 0.1; transform: translateX(3px); }
+  50%      { opacity: 0.9; transform: translateX(-3px); }
 }
 @keyframes swipe-chevron-bounce-right {
-  0%, 100% { opacity: 0.3; transform: translateX(0); }
-  50%      { opacity: 0.8; transform: translateX(3px); }
+  0%, 100% { opacity: 0.1; transform: translateX(-3px); }
+  50%      { opacity: 0.9; transform: translateX(3px); }
 }
 .swipe-dot {
-  animation: swipe-dot-move 1.8s ease-in-out infinite;
+  animation: swipe-dot-move 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 .swipe-chevron-left {
-  animation: swipe-chevron-bounce-left 1.8s ease-in-out infinite;
+  animation: swipe-chevron-bounce-left 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 .swipe-chevron-right {
-  animation: swipe-chevron-bounce-right 1.8s ease-in-out infinite;
+  animation: swipe-chevron-bounce-right 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
