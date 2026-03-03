@@ -4,7 +4,7 @@ import { profile } from '@/data/profile';
 export default function MobileProfile() {
   return (
     <div
-      className="flex items-center justify-between px-5 py-4 md:hidden"
+      className="sidebar-texture flex items-center justify-between px-5 py-4 md:hidden"
       style={{ backgroundColor: 'var(--kraft)' }}
     >
       <div className="flex items-center gap-4">
