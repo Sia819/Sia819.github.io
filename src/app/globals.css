@@ -453,3 +453,28 @@ details > *:not(summary) {
 .scroll-chevron {
   animation: scroll-chevron-bounce 1.8s ease-in-out infinite;
 }
+
+/* 모바일 스와이프 힌트 */
+@keyframes swipe-dot-move {
+  0%   { opacity: 0; transform: translateX(-8px); }
+  20%  { opacity: 0.8; }
+  80%  { opacity: 0.8; }
+  100% { opacity: 0; transform: translateX(8px); }
+}
+@keyframes swipe-chevron-bounce-left {
+  0%, 100% { opacity: 0.3; transform: translateX(0); }
+  50%      { opacity: 0.6; transform: translateX(-2px); }
+}
+@keyframes swipe-chevron-bounce-right {
+  0%, 100% { opacity: 0.3; transform: translateX(0); }
+  50%      { opacity: 0.6; transform: translateX(2px); }
+}
+.swipe-dot {
+  animation: swipe-dot-move 1.8s ease-in-out infinite;
+}
+.swipe-chevron-left {
+  animation: swipe-chevron-bounce-left 1.8s ease-in-out infinite;
+}
+.swipe-chevron-right {
+  animation: swipe-chevron-bounce-right 1.8s ease-in-out infinite;
+}
