@@ -455,25 +455,51 @@ details > *:not(summary) {
   animation: scroll-chevron-bounce 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-/* 모바일 스와이프 힌트 모던 애니메이션 */
-@keyframes swipe-dot-move {
-  0%   { opacity: 0; transform: translateX(-14px) scale(0.6); }
-  20%  { opacity: 1; transform: translateX(-8px) scale(1.1); }
-  50%  { opacity: 1; transform: translateX(8px) scale(1.1); }
-  70%  { opacity: 0; transform: translateX(14px) scale(0.6); }
-  100% { opacity: 0; transform: translateX(14px); }
+/* 모바일 스와이프 제스처 시뮬레이션 애니메이션 */
+@keyframes swipe-gesture-move {
+  0%   { transform: translateX(20px); opacity: 0; }
+  15%  { transform: translateX(20px); opacity: 1; }
+  30%  { transform: translateX(20px); opacity: 1; }
+  70%  { transform: translateX(-20px); opacity: 1; }
+  85%  { transform: translateX(-20px); opacity: 1; }
+  100% { transform: translateX(-20px); opacity: 0; }
 }
-@keyframes swipe-chevron-bounce-left {
-  0%, 100% { opacity: 0.1; transform: translateX(3px); }
-  50%      { opacity: 0.9; transform: translateX(-3px); }
+
+@keyframes swipe-hand-press {
+  0%, 15% { transform: scale(1.1) rotate(12deg); }
+  25%, 70% { transform: scale(0.95) rotate(0deg); }
+  85%, 100% { transform: scale(1.1) rotate(12deg); }
 }
-@keyframes swipe-chevron-bounce-right {
-  0%, 100% { opacity: 0.1; transform: translateX(-3px); }
-  50%      { opacity: 0.9; transform: translateX(3px); }
+
+@keyframes swipe-ripple-effect {
+  0%, 20% { transform: scale(0.3); opacity: 0; }
+  30% { transform: scale(1.2); opacity: 0.6; }
+  60%, 100% { transform: scale(2.5); opacity: 0; }
 }
-.swipe-dot {
-  animation: swipe-dot-move 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+
+@keyframes swipe-touch-dot-effect {
+  0%, 20% { transform: scale(0); opacity: 0; }
+  25%, 75% { transform: scale(1); opacity: 0.8; }
+  80%, 100% { transform: scale(0); opacity: 0; }
 }
+
+.swipe-gesture-container {
+  animation: swipe-gesture-move 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.swipe-hand-icon {
+  animation: swipe-hand-press 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transform-origin: 75% 90%; /* 손목 부근을 기준으로 회전하도록 변경 */
+}
+
+.swipe-ripple {
+  animation: swipe-ripple-effect 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.swipe-touch-dot {
+  animation: swipe-touch-dot-effect 3s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
 .swipe-chevron-left {
   animation: swipe-chevron-bounce-left 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }

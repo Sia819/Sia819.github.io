@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { MouseIcon } from '@/components/icons/MouseIcon';
 import { ChevronIcon } from '@/components/icons/ChevronIcon';
-import { SwipeTrackIcon } from '@/components/icons/SwipeTrackIcon';
+import { SwipeHintIcon } from '@/components/icons/SwipeHintIcon';
 
 interface ScrollDownHintProps {
   scrollRef: React.RefObject<HTMLDivElement | null>;
@@ -70,23 +70,9 @@ const ScrollDownHint = ({ scrollRef }: ScrollDownHintProps) => {
         <ChevronIcon direction="down" className="scroll-chevron mt-1" />
       </div>
 
-      {/* 모바일: 스와이프 힌트 */}
-      <div className="flex md:hidden items-center gap-3 opacity-80">
-        <ChevronIcon direction="left" className="swipe-chevron-left" />
-        <SwipeTrackIcon>
-          <div
-            className="swipe-dot absolute rounded-full"
-            style={{
-              width: 5,
-              height: 5,
-              top: 7.5,
-              left: 17.5,
-              backgroundColor: 'var(--text-muted)',
-              boxShadow: '0 0 3px var(--text-muted)'
-            }}
-          />
-        </SwipeTrackIcon>
-        <ChevronIcon direction="right" className="swipe-chevron-right" />
+      {/* 모바일: 스와이프 힌트 (손가락 + 점 오버홀) */}
+      <div className="flex md:hidden items-center justify-center opacity-80">
+        <SwipeHintIcon className="text-[var(--text-muted)]" />
       </div>
     </div>
   );
