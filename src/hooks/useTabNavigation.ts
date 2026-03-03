@@ -13,6 +13,7 @@ interface HintState {
 
 // LRU 프리패치 캐시 — Map 삽입 순서를 활용한 최소 구현
 const MAX_PREFETCH_CACHE = 10;
+const SWIPE_THRESHOLD = 50;
 const prefetchCache = new Map<string, number>(); // path → timestamp (삽입 순서 = LRU 순서)
 
 const prefetchLRU = {
@@ -74,6 +75,9 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
   const hintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tabSwitchTime = useRef<number>(0);
   const isNavigating = useRef(false);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+
+  const currentIdx = allTabs.findIndex((t) => t.id === currentTabId);
 
   // 탭 전환 함수
   const navigateTab = useCallback(
@@ -94,6 +98,17 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
       }, 300);
     },
     [router],
+  );
+
+  // 인접 탭으로 전환 (direction: -1 = 이전, 1 = 다음)
+  const navigateAdjacent = useCallback(
+    (direction: 1 | -1): boolean => {
+      const targetIdx = currentIdx + direction;
+      if (targetIdx < 0 || targetIdx >= allTabs.length) return false;
+      navigateTab(allTabs[targetIdx].id);
+      return true;
+    },
+    [currentIdx, allTabs, navigateTab],
   );
 
   // pathname 변경 시 스크롤 초기화 + 상태 리셋
@@ -143,42 +158,57 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
       e.preventDefault();
-
-      const idx = allTabs.findIndex((t) => t.id === currentTabId);
-      if (e.key === 'ArrowDown' && idx < allTabs.length - 1) {
-        navigateTab(allTabs[idx + 1].id);
-      } else if (e.key === 'ArrowUp' && idx > 0) {
-        navigateTab(allTabs[idx - 1].id);
-      }
+      navigateAdjacent(e.key === 'ArrowDown' ? 1 : -1);
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentTabId, allTabs, navigateTab]);
+  }, [navigateAdjacent]);
 
   // 콘텐츠 외부에서 휠 → 탭 전환
   const handleOuterWheel = useCallback(
     (e: React.WheelEvent) => {
       if (wheelCooldown.current || isNavigating.current) return;
-      const delta = e.deltaY;
-      if (Math.abs(delta) < 10) return;
+      if (Math.abs(e.deltaY) < 10) return;
 
-      const idx = allTabs.findIndex((t) => t.id === currentTabId);
-      if (delta > 0 && idx < allTabs.length - 1) {
-        navigateTab(allTabs[idx + 1].id);
-      } else if (delta < 0 && idx > 0) {
-        navigateTab(allTabs[idx - 1].id);
-      } else {
-        return;
-      }
+      if (!navigateAdjacent(e.deltaY > 0 ? 1 : -1)) return;
 
       wheelCooldown.current = true;
       setTimeout(() => {
         wheelCooldown.current = false;
       }, 120);
     },
-    [currentTabId, allTabs, navigateTab],
+    [navigateAdjacent],
   );
+
+  // 모바일: 좌우 스와이프 → 탭 전환
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+
+    const onTouchStart = (e: TouchEvent) => {
+      const t = e.touches[0];
+      touchStart.current = { x: t.clientX, y: t.clientY };
+    };
+
+    const onTouchEnd = (e: TouchEvent) => {
+      if (!touchStart.current) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStart.current.x;
+      const dy = t.clientY - touchStart.current.y;
+      touchStart.current = null;
+
+      if (Math.abs(dx) < SWIPE_THRESHOLD || Math.abs(dx) < Math.abs(dy)) return;
+      navigateAdjacent(dx < 0 ? 1 : -1);
+    };
+
+    el.addEventListener('touchstart', onTouchStart, { passive: true });
+    el.addEventListener('touchend', onTouchEnd, { passive: true });
+    return () => {
+      el.removeEventListener('touchstart', onTouchStart);
+      el.removeEventListener('touchend', onTouchEnd);
+    };
+  }, [navigateAdjacent]);
 
   // 콘텐츠 내부에서 휠 → 직접 스크롤 + boundary 감지
   // 네이티브 addEventListener로 { passive: false } 지정 (React onWheel은 passive라 preventDefault 불가)
@@ -212,8 +242,7 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
       if (atBoundary) {
         if (!boundaryTime.current) {
           boundaryTime.current = Date.now();
-          const idx = allTabs.findIndex((t) => t.id === currentTabId);
-          const target = goDown ? allTabs[idx + 1] : allTabs[idx - 1];
+          const target = goDown ? allTabs[currentIdx + 1] : allTabs[currentIdx - 1];
           if (target && !hintTimer.current) {
             const dir = goDown ? ('down' as const) : ('up' as const);
             hintTimer.current = setTimeout(() => setHint({ tab: target, direction: dir }));
@@ -238,7 +267,7 @@ const useTabNavigation = (allTabs: readonly TabDef[]) => {
 
     el.addEventListener('wheel', handler, { passive: false });
     return () => el.removeEventListener('wheel', handler);
-  }, [currentTabId, allTabs]);
+  }, [currentIdx, allTabs]);
 
   return {
     currentTabId,
