@@ -1,5 +1,6 @@
 'use client';
 
+import { useRef } from 'react';
 import { ALL_TABS } from '@/lib/tabs';
 import { TabStrip } from '@/components/tabs/TabButton';
 import useTabNavigation from '@/hooks/useTabNavigation';
@@ -22,6 +23,9 @@ const NotebookShell = ({ children }: NotebookShellProps) => {
   } = useTabNavigation(ALL_TABS);
 
   const activeTabDef = ALL_TABS.find((t) => t.id === currentTabId) ?? ALL_TABS[0];
+  const hintShown = useRef(false);
+  const showScrollHint = currentTabId === 'home' && !hintShown.current;
+  if (currentTabId !== 'home' && !hintShown.current) hintShown.current = true;
 
   return (
     <div className="flex h-screen items-stretch justify-center">
@@ -83,11 +87,6 @@ const NotebookShell = ({ children }: NotebookShellProps) => {
               </div>
             </div>
 
-            {/* 첫 방문 스크롤 다운 힌트 */}
-            {currentTabId === 'home' && (
-              <ScrollDownHint scrollRef={contentRef} />
-            )}
-
             {/* 스크롤 끝 힌트 */}
             {hint && (
               <div
@@ -111,6 +110,11 @@ const NotebookShell = ({ children }: NotebookShellProps) => {
             )}
           </div>
         </div>
+
+        {/* 첫 방문 스크롤/스와이프 힌트 — 노트북 컨테이너 기준 */}
+        {showScrollHint && (
+          <ScrollDownHint scrollRef={contentRef} />
+        )}
 
         {/* 데스크탑: 탭 스트립 */}
         <div className="hidden md:flex">

@@ -22,10 +22,8 @@ const ScrollDownHint = ({ scrollRef }: ScrollDownHintProps) => {
 
   useEffect(() => {
     const showTimer = setTimeout(() => setVisible(true), 800);
-    const autoTimer = setTimeout(() => dismiss(), 6000);
     return () => {
       clearTimeout(showTimer);
-      clearTimeout(autoTimer);
     };
   }, []);
 
@@ -45,36 +43,44 @@ const ScrollDownHint = ({ scrollRef }: ScrollDownHintProps) => {
 
   if (!visible) return null;
 
+  const animClass = fading ? 'scroll-hint-out' : 'scroll-hint-in';
+  const handleAnimEnd = () => { if (fading) setVisible(false); };
+
   return (
-    <div
-      className={`pointer-events-none absolute bottom-6 left-0 right-0 z-10 flex flex-col items-center gap-2 ${fading ? 'scroll-hint-out' : 'scroll-hint-in'}`}
-      onAnimationEnd={() => {
-        if (fading) setVisible(false);
-      }}
-    >
-      {/* 데스크탑: 마우스 아이콘 + 스크롤 휠 애니메이션 */}
-      <div className="hidden md:flex flex-col items-center gap-1 opacity-80">
-        <MouseIcon>
-          <div
-            className="scroll-wheel absolute rounded-full"
-            style={{
-              width: 2.5,
-              height: 6,
-              top: 7,
-              left: 10.75,
-              backgroundColor: 'var(--text-muted)',
-              boxShadow: '0 0 2px var(--text-muted)'
-            }}
-          />
-        </MouseIcon>
-        <ChevronIcon direction="down" className="scroll-chevron mt-1" />
+    <>
+      {/* 데스크탑: 탭 스트립 왼쪽 (노트북 컨테이너 기준 absolute) */}
+      <div
+        className={`pointer-events-none absolute right-[72px] top-[15%] z-20 hidden md:flex flex-col items-center gap-1 ${animClass}`}
+        onAnimationEnd={handleAnimEnd}
+      >
+        <div className="flex flex-col items-center gap-1 opacity-80 scale-150">
+          <MouseIcon>
+            <div
+              className="scroll-wheel absolute rounded-full"
+              style={{
+                width: 2.5,
+                height: 6,
+                top: 7,
+                left: 10.75,
+                backgroundColor: 'var(--text-muted)',
+                boxShadow: '0 0 2px var(--text-muted)'
+              }}
+            />
+          </MouseIcon>
+          <ChevronIcon direction="down" className="scroll-chevron mt-1" />
+        </div>
       </div>
 
-      {/* 모바일: 스와이프 힌트 (손가락 + 점 오버홀) */}
-      <div className="flex md:hidden items-center justify-center opacity-80">
-        <SwipeHintIcon className="text-[var(--text-muted)]" />
+      {/* 모바일: 뷰포트 고정 오버레이 (2배 크기) */}
+      <div
+        className={`pointer-events-none fixed bottom-[17vh] left-0 right-0 z-50 flex md:hidden justify-center ${animClass}`}
+        onAnimationEnd={handleAnimEnd}
+      >
+        <div className="opacity-80 scale-[2]">
+          <SwipeHintIcon className="text-[var(--text-muted)]" />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
