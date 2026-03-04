@@ -30,7 +30,7 @@ const ThemeToggle = () => {
   return (
     <button
       onClick={toggleTheme}
-      className="sidebar-btn relative flex h-10 w-10 items-center justify-center rounded-full"
+      className="sidebar-btn border-warm relative flex h-10 w-10 items-center justify-center rounded-full"
       style={{
         color: 'var(--sidebar-btn-text)',
         backgroundColor: 'var(--sidebar-btn-bg)',
