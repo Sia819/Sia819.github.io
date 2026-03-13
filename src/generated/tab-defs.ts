@@ -11,7 +11,7 @@ export interface TabDefMeta {
 export const ALL_TAB_METAS: TabDefMeta[] = [
   { id: 'home', label: 'home', icon: 'home', description: '' },
   { id: 'resume', label: '이력서', icon: null, description: '`C#` `Unity` `ASP.NET Core` `EF Core` `PostgreSQL` `Python` `Git`' },
-  { id: 'introduction', label: '자기소개', icon: null, description: '2년여간 VR·AR·XR 메타버스 솔루션 기업에서 Unity 클라이언트부터 ASP.NET Core 백엔드, Linux 서버 인프라까지 프로젝트의 전체 스택을 주도한 Software Engineer입니다.' },
-  { id: 'career', label: '경력', icon: null, description: '**Unity Full-Stack Developer** | 2023.08 - 2025.09 (2년 2개월)' },
+  { id: 'experience', label: '경력기술서', icon: null, description: '**Unity Full-Stack Developer** | 2023.08 - 2025.09 (2년 2개월)' },
+  { id: 'introduction', label: '자기소개서', icon: null, description: '재사용 가능하고 유지보수하기 좋은 구조를 설계하는 것을 지향하는 개발자입니다.' },
   { id: 'about', label: 'About This Site', icon: 'about', description: '| 분류 | 기술 |' },
 ];

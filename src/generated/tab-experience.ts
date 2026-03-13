@@ -3,11 +3,11 @@
 
 import type { ComponentType } from 'react';
 
-import introductionMd from '../content/4. introduction.md';
+import experienceMd from '../content/3. experience.md';
 
 export type TabContent =
   | { type: 'markdown'; content: string }
   | { type: 'component'; component: ComponentType<{ accentColor: string }> };
 
-const tabContent: TabContent = { type: 'markdown', content: introductionMd };
+const tabContent: TabContent = { type: 'markdown', content: experienceMd };
 export default tabContent;

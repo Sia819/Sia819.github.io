@@ -4,15 +4,15 @@
 import type { TabContent } from './tab-home';
 
 import tabResume from './tab-resume';
+import tabExperience from './tab-experience';
 import tabIntroduction from './tab-introduction';
-import tabCareer from './tab-career';
 import tabAbout from './tab-about';
 
 export type { TabContent };
 
 export const TAB_CONTENT_MAP: Record<string, TabContent> = {
   'resume': tabResume,
+  'experience': tabExperience,
   'introduction': tabIntroduction,
-  'career': tabCareer,
   'about': tabAbout,
 };
